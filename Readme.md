@@ -1,11 +1,11 @@
-1.½â›QÒ»Ğ©Ò•îlÖĞµÄ¹Ì¶¨Ë®Ó¡£¬·½·¨ÊÇ²ÉÓÃffmpegßMĞĞÌÀí£¬
+#1.è§£æ±ºä¸€äº›è¦–é »ä¸­çš„å›ºå®šæ°´å°ï¼Œæ–¹æ³•æ˜¯é‡‡ç”¨ffmpegé€²è¡Œè™•ç†ï¼Œ
 
-2.ÒÀÙ‡í—Ä¿
->* ffmpeg  ĞèÒª×Ô¼ºÅäÖÃµ½­h¾³×ƒÁ¿ÖĞ
->* xFFMPEG.net  Ê¹ÓÃnuGet¹ÜÀí
->* serilog      Ê¹ÓÃnuGet¹ÜÀí
->* LibVLCSharp                       Ê¹ÓÃnuGet¹ÜÀí
->* VideoLAN.LibVLC.Windows           Ê¹ÓÃnuGet¹ÜÀí
->* Vlc.DotNet.Forms                  Ê¹ÓÃnuGet¹ÜÀí
+#2.ä¾è³´é …ç›®
+>* ffmpeg  éœ€è¦è‡ªå·±é…ç½®åˆ°ç’°å¢ƒè®Šé‡ä¸­
+>* xFFMPEG.net  ä½¿ç”¨nuGetç®¡ç†
+>* serilog      ä½¿ç”¨nuGetç®¡ç†
+>* LibVLCSharp                       ä½¿ç”¨nuGetç®¡ç†
+>* VideoLAN.LibVLC.Windows           ä½¿ç”¨nuGetç®¡ç†
+>* Vlc.DotNet.Forms                  ä½¿ç”¨nuGetç®¡ç†
 
-```
+

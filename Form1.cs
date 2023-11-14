@@ -26,6 +26,8 @@ namespace RemoveWaterMar
         private int width;
         private int height;
 
+        private List<Area> areas = new List<Area>(); 
+
         Point startPoint;  //起始点
         Point endPoint;   //结束点
         bool blnDraw;
@@ -143,9 +145,14 @@ namespace RemoveWaterMar
 
         }
 
-        private void btnPrev_Click(object sender, EventArgs e)
+        //检出多个处理框内容重叠否
+        private void checkRemoveArea()
         {
 
+        }
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            checkRemoveArea();
             Process preProcess = new Process();
             preProcess.StartInfo.FileName = "ffmpeg";
             preProcess.StartInfo.WorkingDirectory = "./";
@@ -231,6 +238,7 @@ namespace RemoveWaterMar
 
         private void btnDoit_MouseClick(object sender, MouseEventArgs e)
         {
+            checkRemoveArea();
             //MessageBox.Show("位置\nx=" + x + "\ny=" + y + "\nwidth=" + width + "\nheight=" + height);
             if (read == false) return;
             if (draw == false)
