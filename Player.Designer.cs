@@ -127,12 +127,14 @@
             Controls.Add(btn1x);
             Controls.Add(play);
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            HelpButton = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "Player";
             ShowInTaskbar = false;
             Text = "Player";
+            HelpButtonClicked += Player_HelpButtonClicked;
             FormClosed += Player_FormClosed;
             Load += Player_Load;
             KeyUp += Player_KeyUp;

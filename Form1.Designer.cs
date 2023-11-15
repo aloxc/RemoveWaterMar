@@ -40,6 +40,7 @@
             picBoxPrev = new PictureBox();
             btnOpenOld = new Button();
             btnOpenNew = new Button();
+            btnHelp = new Button();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -164,11 +165,22 @@
             btnOpenNew.UseVisualStyleBackColor = true;
             btnOpenNew.Click += btnOpenNew_Click;
             // 
+            // btnHelp
+            // 
+            btnHelp.Location = new Point(1393, 11);
+            btnHelp.Name = "btnHelp";
+            btnHelp.Size = new Size(112, 34);
+            btnHelp.TabIndex = 16;
+            btnHelp.Text = "帮助";
+            btnHelp.UseVisualStyleBackColor = true;
+            btnHelp.Click += btnHelp_Click;
+            // 
             // WaterMark
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(3063, 1184);
+            Controls.Add(btnHelp);
             Controls.Add(btnOpenNew);
             Controls.Add(btnOpenOld);
             Controls.Add(picBoxPrev);
@@ -179,6 +191,7 @@
             Controls.Add(picBox);
             Controls.Add(btnOpen);
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            HelpButton = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "WaterMark";
             Text = "淡化视频水印";
@@ -204,5 +217,6 @@
         private PictureBox picBoxPrev;
         private Button btnOpenOld;
         private Button btnOpenNew;
+        private Button btnHelp;
     }
 }

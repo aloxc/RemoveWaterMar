@@ -410,5 +410,11 @@ namespace RemoveWaterMar
             RadioButton radioButton = sender as RadioButton;
             //Log.Information("click " + radioButton.Name + "\tcpu:" + rbtnCpu.Checked + "\t gpu:" + rbtnGpu.Checked);
         }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            Help help = new Help();
+            help.ShowDialog();
+        }
     }
 }

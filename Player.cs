@@ -102,7 +102,7 @@ namespace RemoveWaterMar
                 this.Close();
             }
             int volume = play.Audio.Volume;
-            this.Text = "分辨率：" + Width + "x" + Height + "     音量：" + volume + "%" 
+            this.Text = "分辨率：" + Width + "x" + Height + "     音量：" + volume + "%"
                 + "     帧率：" + fps + "     码率：" + bitRate + "     时长(s)：" + duration +
                 "     " + fileName;
             pos = (int)(play.Position * 100 * pBarPlayerMultiple);
@@ -110,7 +110,7 @@ namespace RemoveWaterMar
             {
                 this.pBarPlayer.Value = pos;
             }
-            
+
 
         }
 
@@ -250,13 +250,13 @@ namespace RemoveWaterMar
                     {
                         play.Play();
                     }
-                    
+
                     break;
             }
         }
         private void setTime(int second)
         {
-            if(second < 0)
+            if (second < 0)
             {
                 //后退
                 long time = play.Time + second * 1000;
@@ -265,7 +265,7 @@ namespace RemoveWaterMar
                     play.Time = time;
                 }
             }
-            else if(second > 0)
+            else if (second > 0)
             {
                 //前进
                 long time = play.Time + second * 1000;
@@ -290,6 +290,12 @@ namespace RemoveWaterMar
                 //  设置伴随的对象.
                 toolTip1.SetToolTip(this.pBarPlayer, "查询");//设置提示按钮和提示内容
             */
+        }
+
+        private void Player_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Help help = new Help();
+            help.ShowDialog();
         }
     }
 }
