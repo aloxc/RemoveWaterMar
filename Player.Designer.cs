@@ -106,7 +106,7 @@
             pBarPlayer.Location = new Point(-8, -3);
             pBarPlayer.Margin = new Padding(5, 4, 5, 4);
             pBarPlayer.Name = "pBarPlayer";
-            pBarPlayer.Maximum = 100 * pBarPlayerMultiple;
+            pBarPlayer.Maximum = 10000;
             pBarPlayer.Size = new Size(1133, 10);
             pBarPlayer.TabIndex = 5;
             pBarPlayer.MouseHover += pBarPlayer_MouseHover;
