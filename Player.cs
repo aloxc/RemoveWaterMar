@@ -14,6 +14,11 @@ namespace RemoveWaterMar
         private ToolTip toolTip = null;
         private double fps;
         private int? bitRate;
+        //视频时长，单位秒,这时使用ffmpeg读取出来的
+        private int duration;
+        //视频时长，单位毫秒,这时使用ffmpeg读取出来的
+        private double durationMilliseconds;
+        private System.Diagnostics.Stopwatch watchTime = null;
 
         public Player(string filePath)
         {
@@ -27,6 +32,8 @@ namespace RemoveWaterMar
             toolTip.ReshowDelay = 500;//指针从一个控件移向另一个控件时，经过多久才会显示下一个提示框
             toolTip.ShowAlways = true;//是否显示提示框
             timer1.Enabled = true;
+            watchTime = new System.Diagnostics.Stopwatch();   //定义一个计时对象  
+            watchTime.Start();
 
 
         }
@@ -95,16 +102,25 @@ namespace RemoveWaterMar
                 this.Close();
             }
             int volume = play.Audio.Volume;
-            this.Text = fileName + "         分辨率：" + Width + "x" + Height + "         音量：" + volume + "%" + "         帧率：" + fps + "         码率：" + bitRate;
+            this.Text = "分辨率：" + Width + "x" + Height + "     音量：" + volume + "%" 
+                + "     帧率：" + fps + "     码率：" + bitRate + "     时长(s)：" + duration +
+                "     " + fileName;
             pos = (int)(play.Position * 100 * pBarPlayerMultiple);
-            this.pBarPlayer.Value = pos;
+            if (pos <= 100 * pBarPlayerMultiple)
+            {
+                this.pBarPlayer.Value = pos;
+            }
+            
 
         }
 
         private void time1_Tick(object sender, EventArgs e)
         {
             //Log.Information("tick !");
-            toolTip.SetToolTip(pBarPlayer, "进度：" + (int.Parse(pBarPlayer.Value.ToString()) / pBarPlayerMultiple));//toolTip显示进度
+            int percent = (int.Parse(pBarPlayer.Value.ToString()) / pBarPlayerMultiple);
+            //(int)watchTime.Elapsed.TotalSeconds
+            int time = (int)play.Time / 1000;//毫秒转秒
+            toolTip.SetToolTip(pBarPlayer, "进度：" + time + "s(" + percent + "%)");//toolTip显示进度
         }
 
 
@@ -130,7 +146,6 @@ namespace RemoveWaterMar
         {
             play.Rate = 2f;
             setRateButtonForeColor(sender as Button);
-
         }
 
         public async void GetVideoInfo(Engine ffmpeg, InputFile inputFile, CancellationToken token)
@@ -139,6 +154,9 @@ namespace RemoveWaterMar
             string frameSize = data.VideoData.FrameSize;
             fps = data.VideoData.Fps;
             bitRate = data.VideoData.BitRateKbs;
+            TimeSpan durat = data.Duration;//00:01:02.3200000
+            durationMilliseconds = data.Duration.TotalMilliseconds;
+            duration = (int)data.Duration.TotalSeconds;
 
             string[] frameInfo = frameSize.Split("x");
             vWidth = Int32.Parse(frameInfo[0]);
@@ -205,9 +223,58 @@ namespace RemoveWaterMar
                     }
                     play.Audio.Volume = volume;
                     break;
+                case Keys.Right:
+                    setTime(5);
+                    break;
+                case Keys.Left:
+                    setTime(-5);
+                    break;
+                case Keys.PageDown:
+                    setTime(10);
+                    break;
+                case Keys.PageUp:
+                    setTime(-10);
+                    break;
+                case Keys.End:
+                    setTime(15);
+                    break;
+                case Keys.Home:
+                    setTime(-15);
+                    break;
+                case Keys.Space:
+                    if (play.IsPlaying)
+                    {
+                        play.Pause();
+                    }
+                    else
+                    {
+                        play.Play();
+                    }
+                    
+                    break;
             }
         }
-
+        private void setTime(int second)
+        {
+            if(second < 0)
+            {
+                //后退
+                long time = play.Time + second * 1000;
+                if (time > 0)
+                {
+                    play.Time = time;
+                }
+            }
+            else if(second > 0)
+            {
+                //前进
+                long time = play.Time + second * 1000;
+                if (time < play.Length)
+                {
+                    play.Time = time;
+                }
+            }
+        }
         private void pBarPlayer_MouseHover(object sender, EventArgs e)
         {
             /*
