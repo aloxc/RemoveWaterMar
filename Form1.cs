@@ -1,6 +1,7 @@
 using FFmpeg.NET;
 using Serilog;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 namespace RemoveWaterMar
 {
@@ -8,6 +9,11 @@ namespace RemoveWaterMar
 
     public partial class WaterMark : Form
     {
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
         private int picWidth = 0;
         private int picHight = 0;
@@ -142,7 +148,7 @@ namespace RemoveWaterMar
         }
 
 
-        private void btnPrev_Click(object sender, EventArgs e)
+        private void btnPrevPic_Click(object sender, EventArgs e)
         {
             //player2 player2 = new player2(filePath, x, y, width, height);
             // player2.ShowDialog();
@@ -183,7 +189,7 @@ namespace RemoveWaterMar
             preProcess.StartInfo.RedirectStandardError = true;
             preProcess.EnableRaisingEvents = true;
 
-            preProcess.Exited += new EventHandler(prev_Exited);
+            preProcess.Exited += new EventHandler(prevPicExited);
 
 
             preProcess.Start();
@@ -208,7 +214,7 @@ namespace RemoveWaterMar
 
         }
 
-        void prev_Exited(Object sender, EventArgs e)
+        void prevPicExited(Object sender, EventArgs e)
         {
             picBoxPrev.Load(prevfile);
             picBoxPrev.Show();
@@ -415,6 +421,36 @@ namespace RemoveWaterMar
         {
             Help help = new Help();
             help.ShowDialog();
+        }
+
+        private void btnPrevVideo_Click(object sender, EventArgs e)
+        {
+            Process ffplay = new Process();
+            ffplay.StartInfo.FileName = "ffplay";
+            ffplay.StartInfo.WorkingDirectory = "./";
+            ffplay.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            string param = "-i \"" + filePath + "\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" ";
+
+            ffplay.StartInfo.Arguments = param;
+            ffplay.StartInfo.CreateNoWindow = true;
+            ffplay.StartInfo.RedirectStandardOutput = true;
+            ffplay.StartInfo.UseShellExecute = false;
+            ffplay.EnableRaisingEvents = true;
+
+            ffplay.OutputDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");
+            ffplay.ErrorDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");
+            ffplay.Exited += (o, e) => Debug.WriteLine("Exited", "ffplay");
+            ffplay.Start();
+
+            Thread.Sleep(500); // you need to wait/check the process started, then...
+
+            SetParent(ffplay.MainWindowHandle, this.Handle);
+
+            // window, x, y, width, height, repaint
+            // move the ffplayer window to the top-left corner and set the size to 320x280
+            MoveWindow(ffplay.MainWindowHandle, 0, 0, width, height, true);
+
+
         }
     }
 }

@@ -36,11 +36,12 @@
             rbtnGpu = new RadioButton();
             gBoxMethod = new GroupBox();
             btnStop = new Button();
-            btnPrev = new Button();
+            btnPrevPic = new Button();
             picBoxPrev = new PictureBox();
             btnOpenOld = new Button();
             btnOpenNew = new Button();
             btnHelp = new Button();
+            btnPrevVideo = new Button();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -124,17 +125,17 @@
             btnStop.UseVisualStyleBackColor = true;
             btnStop.Click += btnStop_Click;
             // 
-            // btnPrev
+            // btnPrevPic
             // 
-            btnPrev.Location = new Point(897, 11);
-            btnPrev.Name = "btnPrev";
-            btnPrev.Size = new Size(112, 34);
-            btnPrev.TabIndex = 12;
-            btnPrev.Text = "预览";
-            btnPrev.UseVisualStyleBackColor = true;
-            btnPrev.Click += btnPrev_Click;
-            btnPrev.Leave += btnPrev_Leave;
-            btnPrev.MouseLeave += btnPrev_Leave;
+            btnPrevPic.Location = new Point(897, 11);
+            btnPrevPic.Name = "btnPrevPic";
+            btnPrevPic.Size = new Size(112, 34);
+            btnPrevPic.TabIndex = 12;
+            btnPrevPic.Text = "预览图片";
+            btnPrevPic.UseVisualStyleBackColor = true;
+            btnPrevPic.Click += btnPrevPic_Click;
+            btnPrevPic.Leave += btnPrev_Leave;
+            btnPrevPic.MouseLeave += btnPrev_Leave;
             // 
             // picBoxPrev
             // 
@@ -146,7 +147,7 @@
             // 
             // btnOpenOld
             // 
-            btnOpenOld.Location = new Point(1042, 11);
+            btnOpenOld.Location = new Point(1206, 12);
             btnOpenOld.Name = "btnOpenOld";
             btnOpenOld.RightToLeft = RightToLeft.No;
             btnOpenOld.Size = new Size(145, 34);
@@ -157,7 +158,7 @@
             // 
             // btnOpenNew
             // 
-            btnOpenNew.Location = new Point(1219, 11);
+            btnOpenNew.Location = new Point(1383, 12);
             btnOpenNew.Name = "btnOpenNew";
             btnOpenNew.Size = new Size(145, 34);
             btnOpenNew.TabIndex = 15;
@@ -167,7 +168,7 @@
             // 
             // btnHelp
             // 
-            btnHelp.Location = new Point(1393, 11);
+            btnHelp.Location = new Point(1557, 12);
             btnHelp.Name = "btnHelp";
             btnHelp.Size = new Size(112, 34);
             btnHelp.TabIndex = 16;
@@ -175,16 +176,27 @@
             btnHelp.UseVisualStyleBackColor = true;
             btnHelp.Click += btnHelp_Click;
             // 
+            // btnPrevVideo
+            // 
+            btnPrevVideo.Location = new Point(1048, 12);
+            btnPrevVideo.Name = "btnPrevVideo";
+            btnPrevVideo.Size = new Size(112, 34);
+            btnPrevVideo.TabIndex = 17;
+            btnPrevVideo.Text = "预览视频";
+            btnPrevVideo.UseVisualStyleBackColor = true;
+            btnPrevVideo.Click += btnPrevVideo_Click;
+            // 
             // WaterMark
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(3063, 1184);
+            Controls.Add(btnPrevVideo);
             Controls.Add(btnHelp);
             Controls.Add(btnOpenNew);
             Controls.Add(btnOpenOld);
             Controls.Add(picBoxPrev);
-            Controls.Add(btnPrev);
+            Controls.Add(btnPrevPic);
             Controls.Add(btnStop);
             Controls.Add(gBoxMethod);
             Controls.Add(btnDoit);
@@ -213,10 +225,11 @@
         private RadioButton rbtnGpu;
         private GroupBox gBoxMethod;
         private Button btnStop;
-        private Button btnPrev;
+        private Button btnPrevPic;
         private PictureBox picBoxPrev;
         private Button btnOpenOld;
         private Button btnOpenNew;
         private Button btnHelp;
+        private Button btnPrevVideo;
     }
 }
