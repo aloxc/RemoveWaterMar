@@ -373,7 +373,6 @@ namespace RemoveWaterMar
             ffplay.StartInfo.WorkingDirectory = "./";
             ffplay.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             string param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" ";
-
             ffplay.StartInfo.Arguments = param;
             ffplay.StartInfo.CreateNoWindow = true;
             ffplay.StartInfo.RedirectStandardOutput = true;
