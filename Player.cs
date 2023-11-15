@@ -1,32 +1,34 @@
 ﻿using FFmpeg.NET;
-using RemoveWaterMar.Properties;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Vlc.DotNet.Forms;
 
 namespace RemoveWaterMar
 {
     public partial class Player : Form
     {
+        public readonly int pBarPlayerMultiple = 100;
         private int vWidth = 0;
         private int vHight = 0;
         private readonly string filePath = null;
         private string fileName = null;
+        private ToolTip toolTip = null;
+        private double fps;
+        private int? bitRate;
 
         public Player(string filePath)
         {
             InitializeComponent();
             Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("./log.txt", rollingInterval: RollingInterval.Month).CreateLogger();
             this.filePath = filePath;
+            toolTip = new ToolTip();
+            // 设置显示样式
+            toolTip.AutoPopDelay = 5000;//提示信息的可见时间
+            toolTip.InitialDelay = 500;//事件触发多久后出现提示
+            toolTip.ReshowDelay = 500;//指针从一个控件移向另一个控件时，经过多久才会显示下一个提示框
+            toolTip.ShowAlways = true;//是否显示提示框
+            timer1.Enabled = true;
+
+
         }
 
         private void vlcControl1_VlcLibDirectoryNeeded(object sender, Vlc.DotNet.Forms.VlcLibDirectoryNeededEventArgs e)
@@ -93,10 +95,18 @@ namespace RemoveWaterMar
                 this.Close();
             }
             int volume = play.Audio.Volume;
-            this.Text = fileName + "%         音量：" + volume + "%";
-            pos = (int)(play.Position * 10000);
+            this.Text = fileName + "         分辨率：" + Width + "x" + Height + "         音量：" + volume + "%" + "         帧率：" + fps + "         码率：" + bitRate;
+            pos = (int)(play.Position * 100 * pBarPlayerMultiple);
             this.pBarPlayer.Value = pos;
+
         }
+
+        private void time1_Tick(object sender, EventArgs e)
+        {
+            //Log.Information("tick !");
+            toolTip.SetToolTip(pBarPlayer, "进度：" + (int.Parse(pBarPlayer.Value.ToString()) / pBarPlayerMultiple));//toolTip显示进度
+        }
+
 
         private void btn1x_Click(object sender, EventArgs e)
         {
@@ -120,14 +130,16 @@ namespace RemoveWaterMar
         {
             play.Rate = 2f;
             setRateButtonForeColor(sender as Button);
+
         }
 
         public async void GetVideoInfo(Engine ffmpeg, InputFile inputFile, CancellationToken token)
         {
-            //MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token).GetAwaiter().GetResult();
-
             MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
             string frameSize = data.VideoData.FrameSize;
+            fps = data.VideoData.Fps;
+            bitRate = data.VideoData.BitRateKbs;
+
             string[] frameInfo = frameSize.Split("x");
             vWidth = Int32.Parse(frameInfo[0]);
             vHight = Int32.Parse(frameInfo[1]);
@@ -194,6 +206,23 @@ namespace RemoveWaterMar
                     play.Audio.Volume = volume;
                     break;
             }
+        }
+
+        private void pBarPlayer_MouseHover(object sender, EventArgs e)
+        {
+            /*
+                // 创建the ToolTip 
+                ToolTip toolTip1 = new ToolTip();
+
+                // 设置显示样式
+                toolTip1.AutoPopDelay = 5000;//提示信息的可见时间
+                toolTip1.InitialDelay = 500;//事件触发多久后出现提示
+                toolTip1.ReshowDelay = 500;//指针从一个控件移向另一个控件时，经过多久才会显示下一个提示框
+                toolTip1.ShowAlways = true;//是否显示提示框
+
+                //  设置伴随的对象.
+                toolTip1.SetToolTip(this.pBarPlayer, "查询");//设置提示按钮和提示内容
+            */
         }
     }
 }

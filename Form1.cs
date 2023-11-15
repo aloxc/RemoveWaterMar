@@ -1,19 +1,14 @@
 using FFmpeg.NET;
-using FFmpeg.NET.Enums;
-using FFmpeg.NET.Events;
 using Serilog;
 using System.Diagnostics;
-using System.IO;
-using System.Net;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
-
 namespace RemoveWaterMar
 {
+
+
     public partial class WaterMark : Form
     {
+
         private int picWidth = 0;
         private int picHight = 0;
         private static string imageFileStart = "Snipaste";
@@ -26,7 +21,6 @@ namespace RemoveWaterMar
         private int width;
         private int height;
 
-        private List<Area> areas = new List<Area>(); 
 
         Point startPoint;  //起始点
         Point endPoint;   //结束点
@@ -43,6 +37,8 @@ namespace RemoveWaterMar
         public WaterMark()
         {
             InitializeComponent();
+            Application.EnableVisualStyles();
+            this.DoubleBuffered = true;
             string rootPath = Directory.GetCurrentDirectory();
             DirectoryInfo root = new DirectoryInfo(rootPath);
             FileInfo[] files = root.GetFiles();
@@ -145,14 +141,22 @@ namespace RemoveWaterMar
 
         }
 
-        //检出多个处理框内容重叠否
-        private void checkRemoveArea()
-        {
 
-        }
         private void btnPrev_Click(object sender, EventArgs e)
         {
-            checkRemoveArea();
+            //player2 player2 = new player2(filePath, x, y, width, height);
+            // player2.ShowDialog();
+            //bool debug = true;
+            /*
+            if (debug)
+            {
+                return;
+            }
+            */
+            //准备更改为使用ffplay来实现，直接播放
+            //ffplay -i D:\download\测试.mp4 -vf "delogo=x=21:y=21:w=315:h=166:show=0,delogo=x=21:y=600:w=315:h=166:show=0"
+
+
             Process preProcess = new Process();
             preProcess.StartInfo.FileName = "ffmpeg";
             preProcess.StartInfo.WorkingDirectory = "./";
@@ -238,7 +242,6 @@ namespace RemoveWaterMar
 
         private void btnDoit_MouseClick(object sender, MouseEventArgs e)
         {
-            checkRemoveArea();
             //MessageBox.Show("位置\nx=" + x + "\ny=" + y + "\nwidth=" + width + "\nheight=" + height);
             if (read == false) return;
             if (draw == false)
