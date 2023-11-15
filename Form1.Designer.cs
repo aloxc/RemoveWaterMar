@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WaterMark));
             btnOpen = new Button();
             picBox = new PictureBox();
@@ -42,6 +43,9 @@
             btnOpenNew = new Button();
             btnHelp = new Button();
             btnPrevVideo = new Button();
+            removeWaterTimer = new System.Windows.Forms.Timer(components);
+            btnTest = new Button();
+            richTextBox1 = new RichTextBox();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -186,11 +190,35 @@
             btnPrevVideo.UseVisualStyleBackColor = true;
             btnPrevVideo.Click += btnPrevVideo_Click;
             // 
+            // removeWaterTimer
+            // 
+            removeWaterTimer.Tick += removeWaterTimerCall;
+            // 
+            // btnTest
+            // 
+            btnTest.Location = new Point(1734, 16);
+            btnTest.Name = "btnTest";
+            btnTest.Size = new Size(112, 34);
+            btnTest.TabIndex = 18;
+            btnTest.Text = "测试";
+            btnTest.UseVisualStyleBackColor = true;
+            btnTest.Click += test_Click;
+            // 
+            // richTextBox1
+            // 
+            richTextBox1.Location = new Point(187, 1175);
+            richTextBox1.Name = "richTextBox1";
+            richTextBox1.Size = new Size(678, 465);
+            richTextBox1.TabIndex = 19;
+            richTextBox1.Text = "";
+            // 
             // WaterMark
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(3063, 1184);
+            ClientSize = new Size(3063, 1652);
+            Controls.Add(richTextBox1);
+            Controls.Add(btnTest);
             Controls.Add(btnPrevVideo);
             Controls.Add(btnHelp);
             Controls.Add(btnOpenNew);
@@ -208,6 +236,7 @@
             Name = "WaterMark";
             Text = "淡化视频水印";
             WindowState = FormWindowState.Maximized;
+            Paint += WaterMark_Paint;
             ((System.ComponentModel.ISupportInitialize)picBox).EndInit();
             gBoxMethod.ResumeLayout(false);
             gBoxMethod.PerformLayout();
@@ -231,5 +260,8 @@
         private Button btnOpenNew;
         private Button btnHelp;
         private Button btnPrevVideo;
+        private System.Windows.Forms.Timer removeWaterTimer;
+        private Button btnTest;
+        private RichTextBox richTextBox1;
     }
 }
