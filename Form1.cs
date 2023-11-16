@@ -23,7 +23,7 @@ namespace RemoveWaterMar
         private static string imageFileStart = "Snipaste";
         private static string logFileStart = "log";
         private string currentImageFile = "snip.jpg";
-        private static string guding = "_out";
+        private static string guding = "__WaterMarout";
 
         private int x;
         private int y;
