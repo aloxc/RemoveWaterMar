@@ -45,7 +45,6 @@
             btnPrevVideo = new Button();
             removeWaterTimer = new System.Windows.Forms.Timer(components);
             btnTest = new Button();
-            richTextBox1 = new RichTextBox();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -83,7 +82,7 @@
             btnDoit.TabIndex = 5;
             btnDoit.Text = "处理视频";
             btnDoit.UseVisualStyleBackColor = true;
-            btnDoit.MouseClick += btnDoit_MouseClick;
+            btnDoit.Click += btnDoit_Click;
             // 
             // rbtnCpu
             // 
@@ -204,20 +203,11 @@
             btnTest.UseVisualStyleBackColor = true;
             btnTest.Click += test_Click;
             // 
-            // richTextBox1
-            // 
-            richTextBox1.Location = new Point(187, 1175);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(678, 465);
-            richTextBox1.TabIndex = 19;
-            richTextBox1.Text = "";
-            // 
             // WaterMark
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(3063, 1652);
-            Controls.Add(richTextBox1);
             Controls.Add(btnTest);
             Controls.Add(btnPrevVideo);
             Controls.Add(btnHelp);
@@ -262,6 +252,5 @@
         private Button btnPrevVideo;
         private System.Windows.Forms.Timer removeWaterTimer;
         private Button btnTest;
-        private RichTextBox richTextBox1;
     }
 }

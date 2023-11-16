@@ -1,28 +1,142 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RemoveWaterMar
 {
     public partial class TestForm : Form
     {
+        Bitmap Night_bitmap;//水平遮罩，垂直遮罩公用变量
+        OpenFileDialog openFileDialog1 = new OpenFileDialog();
         public TestForm()
         {
             InitializeComponent();
+            Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("./log.txt", rollingInterval: RollingInterval.Month).CreateLogger();
+
         }
 
         private void TestForm_Load(object sender, EventArgs e)
         {
+        }
+
+        void btnOpen_Click(object sender, EventArgs e)
+        {
+
+            openFileDialog1.Filter = "*.jpg,*.jpeg,*.bmp,*.gif,*.ico,*.png,*.tif,*.wmf | *.jpg; *.jpeg; *.bmp; *.gif; *.ico; *.png; *.tif; *.wmf";
+            //设置打开图像的类型
+            openFileDialog1.ShowDialog();//打开对话框
+            if (openFileDialog1.FileName.Trim() == "")
+                return;
+            try
+            {
+                Bitmap Lazy_bitmap = new Bitmap(this.openFileDialog1.FileName);
+                //得到原始大小的图像
+                Night_bitmap = new Bitmap(Lazy_bitmap, this.pictureBox1.Width, this.pictureBox1.Height);
+                this.pictureBox1.Image = Night_bitmap;
+            }
+            catch (Exception Err)
+            {
+                MessageBox.Show(this, "打开图像文件错误", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        void btnShuiping_Click(object sender, EventArgs e)
+        {
+            int Lazy_width = this.pictureBox1.Width;//图像宽度 
+            int Lazy_height = this.pictureBox1.Height;//图像高度
+            Graphics Lazy_pic = this.pictureBox1.CreateGraphics();
+            Night_bitmap = new Bitmap(this.pictureBox1.Image, this.pictureBox1.Width, this.pictureBox1.Height);
+
+            //获取Graphics对象
+            Lazy_pic.Clear(Color.Red);//初始为红色
+            //Lazy_pic.DrawImage(Night_bitmap, this.pictureBox1.Location.X,pictureBox1.Location.Y, Lazy_width, Lazy_height);
+            //Bitmap Lazy_bitmap = new Bitmap(Lazy_width, Lazy_height);
+            Bitmap Lazy_bitmap = new Bitmap(this.pictureBox1.Image);
+            int x = 0;
+            while (x < Lazy_width)
+            {
+                for (int i = 0; i <= Lazy_height - 1; i++)
+                {
+                    //Lazy_bitmap.SetPixel(x, i, Color.FromArgb(10,00,255,255));
+
+                    Lazy_bitmap.SetPixel(x, i, Color.FromArgb(100, Night_bitmap.GetPixel(x, i)));
+                    //Lazy_bitmap.SetPixel(x, i, Night_bitmap.GetPixel(x, i));
+                    //上半部分自上而下遮盖，执行到图像一半
+                }
+                x++;
+                this.pictureBox1.Refresh();//图像刷新
+                this.pictureBox1.Image = Lazy_bitmap;
+                //System.Threading.Thread.Sleep(30);//通过挂起线程时间来控制遮盖的速度,此处为睡眠30/1000毫秒
+            }
 
         }
 
+        void btnShuip_Click(object sender, EventArgs e)
+        {
+            int Lazy_width = this.pictureBox1.Width;//图像宽度 
+            int Lazy_height = this.pictureBox1.Height;//图像高度
+            Graphics Lazy_pic = this.pictureBox1.CreateGraphics();
+            //获取Graphics对象
+            Lazy_pic.Clear(Color.Red);//初始为红色
+            Bitmap Lazy_bitmap = new Bitmap(Lazy_width, Lazy_height);
+            int x = 0;
+            while (x <= Lazy_width / 2)
+            {
+                for (int i = 0; i <= Lazy_height - 1; i++)
+                {
+                    Lazy_bitmap.SetPixel(x, i, Night_bitmap.GetPixel(x, i));
+                    //上半部分自上而下遮盖，执行到图像一半
+                }
+                for (int i = 0; i <= Lazy_height - 1; i++)
+                {
+                    Lazy_bitmap.SetPixel(Lazy_width - x - 1, i, Night_bitmap.GetPixel(Lazy_width - x - 1, i));
+                    //下半部分自下而上遮盖，执行到图像一半
+                }
+                x++;
+                this.pictureBox1.Refresh();//图像刷新
+                this.pictureBox1.Image = Lazy_bitmap;
+                System.Threading.Thread.Sleep(30);//通过挂起线程时间来控制遮盖的速度,此处为睡眠30/1000毫秒
+            }
+        }
+
+        void btnChuizhi_Click(object sender, EventArgs e)
+        {
+            int Lazy_width = this.pictureBox1.Width;//图像宽度 
+            int Lazy_height = this.pictureBox1.Height;//图像高度
+            Graphics Lazy_pic = this.pictureBox1.CreateGraphics();
+            //获取Graphics对象
+            Lazy_pic.Clear(Color.Red);//初始为红色
+            Bitmap Lazy_bitmap = new Bitmap(Lazy_width, Lazy_height);
+            int x = 0;
+            while (x <= Lazy_height / 2)
+            {
+                for (int i = 0; i <= Lazy_width - 1; i++)
+                {
+                    Lazy_bitmap.SetPixel(i, x, Night_bitmap.GetPixel(i, x));
+                    //上半部分自上而下遮盖，执行到图像一半
+                }
+                for (int i = 0; i <= Lazy_width - 1; i++)
+                {
+                    Lazy_bitmap.SetPixel(i, Lazy_height - x - 1, Night_bitmap.GetPixel(i, Lazy_height - x - 1));
+                    //下半部分自下而上遮盖，执行到图像一半
+                }
+                x++;
+                this.pictureBox1.Refresh();//图像刷新
+                this.pictureBox1.Image = Lazy_bitmap;
+                System.Threading.Thread.Sleep(30);//通过挂起线程时间来控制遮盖的速度,此处为睡眠30/1000毫秒
+
+            }
+        }
         private void lineButton_Click(object sender, EventArgs e)
         {
             // 画直线  
@@ -168,6 +282,113 @@ namespace RemoveWaterMar
             gra.FillPie(brush, rect, 60, 150);
             brush = new SolidBrush(Color.Yellow);
             gra.FillPie(brush, rect, 210, 150);
+
+        }
+
+        private void btnAlpha_Click(object sender, EventArgs e)
+        {
+            Bitmap bitmap = new Bitmap(this.pictureBox1.Image);
+            Graphics grapic = Graphics.FromImage(this.pictureBox1.Image);
+          
+            Log.Information("height:" + bitmap.Height + ",width:" + bitmap.Width);
+            int iWidth = bitmap.Width;
+            int iHeight = bitmap.Height;
+            int lineWidth = iWidth / 256;
+            int lastWidth = bitmap.Width - lineWidth * 256;
+
+            Random rd = new Random();
+            for (int i = 0; i <= 100; i++)
+            {
+                //grapic.DrawLine(new Pen(Color.FromArgb(rd.Next(256), Color.FromArgb(rd.Next(256), rd.Next(256), rd.Next(256))),
+                    //lineWidth * 2), new Point(i* lineWidth, 0), new Point(i * lineWidth, bitmap.Height));
+                if(i == 255 && lastWidth != 0)
+                {
+                    lastWidth = lineWidth + lastWidth + 1;
+                    grapic.DrawLine(new Pen(Color.FromArgb(255, Color.Red ),
+                    lastWidth), new Point(lineWidth * 255 +lastWidth / 2, 0), new Point(lineWidth * 255 + lastWidth / 2, bitmap.Height));
+                }
+                else
+                {
+                    grapic.DrawLine(new Pen(Color.FromArgb(255, i%2==0?Color.Black:Color.White),
+                    lineWidth), new Point(i * lineWidth + lineWidth/2, 0), new Point(i * lineWidth + lineWidth / 2, bitmap.Height));
+                }
+                Log.Information("cur:" + i * lineWidth + ",lineWidth * 2:" + lineWidth * 2 );
+                this.pictureBox1.Refresh();
+                Thread.Sleep(3);
+            }
+
+
+        }
+        private void btnAlpha_Click_bak(object sender, EventArgs e)
+        {
+            pictureBox1.Refresh();
+            Bitmap bitmap = new Bitmap(this.pictureBox1.Image);
+            Graphics grapic = Graphics.FromImage(this.pictureBox1.Image);
+            /*float[][] matrixItems ={
+               new float[] {1, 0, 0, 0, 0},
+               new float[] {0, 1, 0, 0, 0},
+               new float[] {0, 0, 1, 0, 0},
+               new float[] {0, 0, 0, 0.8f, 0},
+               new float[] {0, 0, 0, 0, 1}};
+            ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
+            ImageAttributes imageAtt = new ImageAttributes();
+            imageAtt.SetColorMatrix(
+               colorMatrix,
+               ColorMatrixFlag.Default,
+               ColorAdjustType.Bitmap);*/
+
+            // First draw a wide black line.
+            /*
+            grapic.DrawLine(
+               new Pen(Color.FromArgb(250, Color.Red), bitmap.Width),
+               new Point(0, 0),
+               new Point(bitmap.Width, bitmap.Height));
+            */
+            Log.Information("height:" + bitmap.Height + ",width:" + bitmap.Width);
+            int iWidth = bitmap.Width;
+            int iHeight = bitmap.Height;
+            int lineWidth = iWidth / 256;
+            int lastWidth = bitmap.Width - lineWidth * 256;
+
+            Random rd = new Random();
+            for (int i = 0; i <= 255; i++)
+            {
+                //grapic.DrawLine(new Pen(Color.FromArgb(rd.Next(256), Color.FromArgb(rd.Next(256), rd.Next(256), rd.Next(256))),
+                //lineWidth * 2), new Point(i* lineWidth, 0), new Point(i * lineWidth, bitmap.Height));
+                if (i == 255 && lastWidth != 0)
+                {
+                    lastWidth = lineWidth + lastWidth + 1;
+                    grapic.DrawLine(new Pen(Color.FromArgb(255, Color.Red),
+                    lastWidth), new Point(lineWidth * 255 + lastWidth / 2, 0), new Point(lineWidth * 255 + lastWidth / 2, bitmap.Height));
+                }
+                else
+                {
+                    grapic.DrawLine(new Pen(Color.FromArgb(255, i % 2 == 0 ? Color.Black : Color.White),
+                    lineWidth), new Point(i * lineWidth + lineWidth / 2, 0), new Point(i * lineWidth + lineWidth / 2, bitmap.Height));
+                }
+                Log.Information("cur:" + i * lineWidth + ",lineWidth * 2:" + lineWidth * 2);
+                this.pictureBox1.Refresh();
+                Thread.Sleep(3);
+            }
+            //grapic.DrawLine(new Pen(Color.FromArgb(250, Color.Red), bitmap.Height),new Point(0, 0),new Point(bitmap.Width, 0));
+            //grapic.DrawLine(new Pen(Color.FromArgb(250, Color.Green), bitmap.Width),new Point(0, 0),new Point(0, bitmap.Height));
+            //grapic.DrawLine(new Pen(Color.FromArgb(100, Color.Yellow), bitmap.Width),new Point(bitmap.Width/2, 0),new Point(bitmap.Width / 2, bitmap.Height));
+            //this.pictureBox1.Refresh();
+            // Now draw the semitransparent bitmap image.
+
+            /*grapic.DrawImage(
+               bitmap,
+               new Rectangle(30, 0, iWidth, iHeight),  // destination rectangle
+               0.0f,                          // source rectangle x
+               0.0f,                          // source rectangle y
+               iWidth,                        // source rectangle width
+               iHeight,                       // source rectangle height
+               GraphicsUnit.Pixel,
+               imageAtt);*/
+
+
+            //pictureBox1.Image = bitmap;
+
 
         }
     }

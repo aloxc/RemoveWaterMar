@@ -1,9 +1,12 @@
 using FFmpeg.NET;
 using Serilog;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+
 namespace RemoveWaterMar
 {
     public partial class WaterMark : Form
@@ -26,10 +29,9 @@ namespace RemoveWaterMar
         private int width;
         private int height;
         private static int lastPercent = 0;
-        private static int lastX = 0;
-        private Color maskFromColor = Color.FromArgb(100, Color.Red);
-        private Color maskToColor = Color.FromArgb(0, Color.Green);
-
+        private static int lastX = -1;
+        private Color maskColor = Color.FromArgb(100, Color.Green);
+        private int perMaskWidth = 0;
 
         Point startPoint;  //起始点
         Point endPoint;   //结束点
@@ -43,6 +45,7 @@ namespace RemoveWaterMar
         private bool processing = false;
         private string prevfile;
         private Graphics graphics;
+
         public WaterMark()
         {
             InitializeComponent();
@@ -66,7 +69,6 @@ namespace RemoveWaterMar
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "视频文件(*.mp4)|*.mp4";
             openFileDialog.RestoreDirectory = true;
@@ -79,7 +81,7 @@ namespace RemoveWaterMar
             {
                 return;
             }
-
+            resetValue();
             var inputFile = new InputFile(filePath);
             Engine ffmpeg = new Engine(@"ffmpeg.exe");
 
@@ -88,11 +90,15 @@ namespace RemoveWaterMar
             GetVideoInfo(ffmpeg, inputFile, token);
             read = true;
         }
+        private void resetValue()
+        {
+            lastPercent = 0;
+            lastX = -1;
+        }
         public async void GetVideoInfo(Engine ffmpeg, InputFile inputFile, CancellationToken token)
         {
             //MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token).GetAwaiter().GetResult();
             MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
-            TimeSpan durat = data.Duration;//00:01:02.3200000
             duration = (int)data.Duration.TotalSeconds;
             string frameSize = data.VideoData.FrameSize;
             string[] frameInfo = frameSize.Split("x");
@@ -102,11 +108,15 @@ namespace RemoveWaterMar
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             currentImageFile = "./" + imageFileStart + Convert.ToInt64(ts.TotalMilliseconds).ToString() + ".jpg";
             var outputFile = new OutputFile(currentImageFile);
-            MediaFile file = await ffmpeg.GetThumbnailAsync(inputFile, outputFile, token);
+            await ffmpeg.GetThumbnailAsync(inputFile, outputFile, token);
             this.picBox.Load(currentImageFile);
-            lastX = this.picBox.Location.X;
-        }
+            pic = new Bitmap(this.picBox.Image, this.picBox.Width, this.picBox.Height);
+            picGraphics = Graphics.FromImage(this.picBox.Image);
+            perMaskWidth = pic.Width / 100;
 
+        }
+        private Graphics picGraphics;
+        private Bitmap pic = null;
 
         private void picBox_MouseMove(object sender, MouseEventArgs e)
         {
@@ -200,14 +210,14 @@ namespace RemoveWaterMar
             }
             pen.Dispose();
         }
-
-        private void btnDoit_MouseClick(object sender, MouseEventArgs e)
+        private void btnDoit_Click(object sender, EventArgs e)
         {
             if (read == false) return;
             if (draw == false)
             {
                 return;
             }
+            resetValue();
             string path = Path.GetDirectoryName(filePath);
             FileInfo f = new FileInfo(filePath);
             //MessageBox.Show(path);
@@ -262,6 +272,7 @@ namespace RemoveWaterMar
             //Log.Information("out " + e.Data);
         }
 
+
         void p_ErrorDataReceived(Object sender, DataReceivedEventArgs e)
         {
             //这里得到的是错误信息
@@ -282,7 +293,18 @@ namespace RemoveWaterMar
                     int cur = int.Parse(times[0]) * 60 * 60 + int.Parse(times[1]) * 60 + int.Parse(times[2]);
                     double rx = Math.Round((Convert.ToDouble(cur) / Convert.ToDouble(duration)), 2) * 100;
                     int percent = Convert.ToInt32(rx);
-         
+
+                    if (lastPercent != percent)
+                    {
+                        int curLineWidth = (lastPercent + 1) * perMaskWidth;
+                        int curLineCenter = (lastPercent + 1) * perMaskWidth;// + perAlphaWidth / 2;
+                        Pen pen = new Pen(maskColor, curLineWidth);
+                        Log.Information("lastAlpha:" + lastPercent + ",percent:" + percent + ",curLineCenter:" + curLineCenter + ",picHeight:" + picHeight + ",lastPercent:" + lastPercent);
+                        this.picBox.Load(currentImageFile);
+                        Graphics.FromImage(this.picBox.Image).DrawLine(pen, new Point(curLineWidth / 2, 0), new Point(curLineWidth / 2, pic.Height));
+                        lastPercent = percent;
+                        this.picBox.Refresh();
+                    }
                     TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
                     TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
                     this.Text = "淡化视频水印        总时长：" + duration + "秒   当前时长：" + cur + "秒   进度：" + percent + "%   用时：" + ((int)abs.TotalSeconds) + "秒";
@@ -298,11 +320,15 @@ namespace RemoveWaterMar
                 FileInfo f = new FileInfo(filePath);
                 TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
                 TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
-                //removeWaterTimer.Enabled = false;
-                MessageBox.Show("处理完成,用时 " + ((int)abs.TotalSeconds) + " 秒", f.Name);
+                                                                        //removeWaterTimer.Enabled = false;
+
                 processing = false;
                 this.btnDoit.Enabled = true;
                 this.btnStop.Enabled = false;
+
+                this.picBox.Load(currentImageFile);
+                this.picBox.Refresh();
+                MessageBox.Show("处理完成,用时 " + ((int)abs.TotalSeconds) + " 秒", f.Name);
             }
             this.Text = "淡化视频水印";
         }
@@ -357,6 +383,8 @@ namespace RemoveWaterMar
 
         private void method_Click(object sender, EventArgs e)
         {
+
+
             RadioButton radioButton = sender as RadioButton;
         }
 
@@ -398,5 +426,7 @@ namespace RemoveWaterMar
             TestForm me = new TestForm();
             me.ShowDialog();
         }
+
+
     }
 }
