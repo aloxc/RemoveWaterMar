@@ -1,4 +1,5 @@
 using FFmpeg.NET;
+using RemoveWaterMar.Properties;
 using Serilog;
 using System.Diagnostics;
 using System.Drawing;
@@ -43,9 +44,11 @@ namespace RemoveWaterMar
         private TimeSpan spendTime;
         private Process process;
         private bool processing = false;
+        private bool notifyStatus = false;
         private string prevfile;
         private Graphics graphics;
-
+        private Icon blueIcon = Resources.icon;
+        private Icon redIcon = Resources.icon2;
         public WaterMark()
         {
             InitializeComponent();
@@ -64,7 +67,6 @@ namespace RemoveWaterMar
             }
             System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;
             Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("./log.txt", rollingInterval: RollingInterval.Month).CreateLogger();
-
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -260,7 +262,16 @@ namespace RemoveWaterMar
 
         private void removeWaterTimerCall(object sender, EventArgs e)
         {
-            Point point = this.picBox.Location;
+            Log.Information("timer :" + notifyStatus);
+            if (notifyStatus)
+            {
+                notifyIcon1.Icon = redIcon;
+            }
+            else
+            {
+                notifyIcon1.Icon = blueIcon;
+            }
+            notifyStatus = !notifyStatus;
         }
 
         private void btnOut_CheckedChanged(object sender, EventArgs e)
@@ -299,7 +310,7 @@ namespace RemoveWaterMar
                         int curLineWidth = (lastPercent + 1) * perMaskWidth;
                         int curLineCenter = (lastPercent + 1) * perMaskWidth;// + perAlphaWidth / 2;
                         Pen pen = new Pen(maskColor, curLineWidth);
-                        Log.Information("lastAlpha:" + lastPercent + ",percent:" + percent + ",curLineCenter:" + curLineCenter + ",picHeight:" + picHeight + ",lastPercent:" + lastPercent);
+                        //Log.Information("lastAlpha:" + lastPercent + ",percent:" + percent + ",curLineCenter:" + curLineCenter + ",picHeight:" + picHeight + ",lastPercent:" + lastPercent);
                         this.picBox.Load(currentImageFile);
                         Graphics.FromImage(this.picBox.Image).DrawLine(pen, new Point(curLineWidth / 2, 0), new Point(curLineWidth / 2, pic.Height));
                         lastPercent = percent;
@@ -328,7 +339,8 @@ namespace RemoveWaterMar
 
                 this.picBox.Load(currentImageFile);
                 this.picBox.Refresh();
-                MessageBox.Show("处理完成,用时 " + ((int)abs.TotalSeconds) + " 秒", f.Name);
+                notifyIcon1.ShowBalloonTip(0, "水印处理完成,耗时" + ((int)abs.TotalSeconds) + " 秒", filePath, ToolTipIcon.Info);
+                //MessageBox.Show("处理完成,用时 " + ((int)abs.TotalSeconds) + " 秒", f.Name);
             }
             this.Text = "淡化视频水印";
         }
@@ -423,10 +435,27 @@ namespace RemoveWaterMar
 
         private void test_Click(object sender, EventArgs e)
         {
-            TestForm me = new TestForm();
-            me.ShowDialog();
+            removeWaterTimer.Enabled = true;
+            notifyIcon1.ShowBalloonTip(0, "消息标题-Error", "这是一个错误类型的消息内容", ToolTipIcon.Info);
+            //TestForm me = new TestForm();
+            //me.ShowDialog();
         }
 
+        private void WaterMark_Load(object sender, EventArgs e)
+        {
+            //removeWaterTimer.Enabled = true;
+        }
 
+        private void notifyIcon1_BalloonTipClosed(object sender, EventArgs e)
+        {
+            removeWaterTimer.Enabled = false;
+            notifyIcon1.Icon = redIcon;
+        }
+
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            removeWaterTimer.Enabled = false;
+            notifyIcon1.Icon = redIcon;
+        }
     }
 }

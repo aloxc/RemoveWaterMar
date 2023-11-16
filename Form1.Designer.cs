@@ -45,6 +45,8 @@
             btnPrevVideo = new Button();
             removeWaterTimer = new System.Windows.Forms.Timer(components);
             btnTest = new Button();
+            notifyIcon1 = new NotifyIcon(components);
+            contextMenuStrip1 = new ContextMenuStrip(components);
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -191,6 +193,7 @@
             // 
             // removeWaterTimer
             // 
+            removeWaterTimer.Interval = 300;
             removeWaterTimer.Tick += removeWaterTimerCall;
             // 
             // btnTest
@@ -202,6 +205,23 @@
             btnTest.Text = "测试";
             btnTest.UseVisualStyleBackColor = true;
             btnTest.Click += test_Click;
+            // 
+            // notifyIcon1
+            // 
+            notifyIcon1.ContextMenuStrip = contextMenuStrip1;
+            notifyIcon1.Icon = (Icon)resources.GetObject("notifyIcon1.Icon");
+            notifyIcon1.Text = "淡化视频水印";
+            notifyIcon1.Visible = true;
+            notifyIcon1.BalloonTipClicked += notifyIcon1_BalloonTipClosed;
+            notifyIcon1.BalloonTipClosed += notifyIcon1_BalloonTipClosed;
+            notifyIcon1.Click += notifyIcon1_Click;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.ImageScalingSize = new Size(24, 24);
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            contextMenuStrip1.Text = "处理成功";
             // 
             // WaterMark
             // 
@@ -226,6 +246,7 @@
             Name = "WaterMark";
             Text = "淡化视频水印";
             WindowState = FormWindowState.Maximized;
+            Load += WaterMark_Load;
             Paint += WaterMark_Paint;
             ((System.ComponentModel.ISupportInitialize)picBox).EndInit();
             gBoxMethod.ResumeLayout(false);
@@ -252,5 +273,7 @@
         private Button btnPrevVideo;
         private System.Windows.Forms.Timer removeWaterTimer;
         private Button btnTest;
+        private NotifyIcon notifyIcon1;
+        private ContextMenuStrip contextMenuStrip1;
     }
 }
