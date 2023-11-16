@@ -435,10 +435,10 @@ namespace RemoveWaterMar
 
         private void test_Click(object sender, EventArgs e)
         {
-            removeWaterTimer.Enabled = true;
-            notifyIcon1.ShowBalloonTip(0, "消息标题-Error", "这是一个错误类型的消息内容", ToolTipIcon.Info);
-            //TestForm me = new TestForm();
-            //me.ShowDialog();
+            //removeWaterTimer.Enabled = true;
+            //notifyIcon1.ShowBalloonTip(0, "消息标题-Error", "这是一个错误类型的消息内容", ToolTipIcon.Info);
+            TestForm me = new TestForm();
+            me.ShowDialog();
         }
 
         private void WaterMark_Load(object sender, EventArgs e)
