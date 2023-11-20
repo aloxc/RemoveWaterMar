@@ -159,7 +159,7 @@
             btnOpenOld.TabIndex = 14;
             btnOpenOld.Text = "打开旧视频";
             btnOpenOld.UseVisualStyleBackColor = true;
-            btnOpenOld.Click += btnOpenOld_Click;
+            btnOpenOld.Click += btnOpenOldVideo_Click;
             // 
             // btnOpenNew
             // 
@@ -169,7 +169,7 @@
             btnOpenNew.TabIndex = 15;
             btnOpenNew.Text = "打开新视频";
             btnOpenNew.UseVisualStyleBackColor = true;
-            btnOpenNew.Click += btnOpenNew_Click;
+            btnOpenNew.Click += btnOpenNewVideo_Click;
             // 
             // btnHelp
             // 
@@ -225,6 +225,7 @@
             // 
             // WaterMark
             // 
+            AllowDrop = true;
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(3063, 1652);
@@ -247,6 +248,8 @@
             Text = "淡化视频水印";
             WindowState = FormWindowState.Maximized;
             Load += WaterMark_Load;
+            DragDrop += WaterMark_DragDrop;
+            DragEnter += WaterMark_DragEnter;
             Paint += WaterMark_Paint;
             ((System.ComponentModel.ISupportInitialize)picBox).EndInit();
             gBoxMethod.ResumeLayout(false);

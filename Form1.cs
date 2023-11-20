@@ -83,6 +83,10 @@ namespace RemoveWaterMar
             {
                 return;
             }
+            openVideoHander();
+        }
+        private void openVideoHander()
+        {
             resetValue();
             var inputFile = new InputFile(filePath);
             Engine ffmpeg = new Engine(@"ffmpeg.exe");
@@ -368,7 +372,7 @@ namespace RemoveWaterMar
             this.picBoxPrev.Image = null;
         }
 
-        private void btnOpenOld_Click(object sender, EventArgs e)
+        private void btnOpenOldVideo_Click(object sender, EventArgs e)
         {
             if (filePath == null || filePath.Length == 0)
             {
@@ -378,7 +382,7 @@ namespace RemoveWaterMar
             player.ShowDialog();
         }
 
-        private void btnOpenNew_Click(object sender, EventArgs e)
+        private void btnOpenNewVideo_Click(object sender, EventArgs e)
         {
             FileInfo f = new FileInfo(filePath);
             string path = Path.GetDirectoryName(filePath);
@@ -456,6 +460,34 @@ namespace RemoveWaterMar
         {
             removeWaterTimer.Enabled = false;
             notifyIcon1.Icon = redIcon;
+        }
+
+        private void WaterMark_DragEnter(object sender, DragEventArgs e)
+        {
+            
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+            //MessageBox.Show("drag");
+        }
+
+        private void WaterMark_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if(files.Length > 1)
+            {
+                MessageBox.Show("只能拖放一个视频文件");
+                return;
+            }
+            string f = files[0];
+            if (!f.ToLower().EndsWith(".mp4"))
+            {
+                MessageBox.Show("只能视频文件(.mp4)");
+                return;
+            }
+            filePath = f;
+            openVideoHander();
+
+
         }
     }
 }
