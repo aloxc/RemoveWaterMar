@@ -4,6 +4,7 @@ using Serilog;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -20,10 +21,10 @@ namespace RemoveWaterMar
 
         private int picWidth = 0;
         private int picHeight = 0;
-        private static string imageFileStart = "Snipaste";
-        private static string logFileStart = "log";
+        private readonly static string imageFileStart = "Snipaste";
+        private readonly static string logFileStart = "log";
         private string currentImageFile = "snip.jpg";
-        private static string guding = "__WaterMarout";
+        private readonly static string guding = "__WaterMarout";
 
         private int x;
         private int y;
@@ -40,6 +41,7 @@ namespace RemoveWaterMar
         bool read = false;
         bool draw = false;
         private string filePath = null;
+        private string fileName = null;
         private int duration = 0;
         private TimeSpan spendTime;
         private Process process;
@@ -78,6 +80,9 @@ namespace RemoveWaterMar
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 filePath = openFileDialog.FileName;
+                FileInfo fileInfo = new FileInfo(filePath);
+                fileName = fileInfo.Name;
+                this.Text = "淡化视频水印       " + this.fileName;
             }
             else
             {
@@ -141,7 +146,6 @@ namespace RemoveWaterMar
                 startPoint = e.Location;
                 blnDraw = true;
             }
-
         }
 
         private void picBox_MouseUp(object sender, MouseEventArgs e)
@@ -322,7 +326,7 @@ namespace RemoveWaterMar
                     }
                     TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
                     TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
-                    this.Text = "淡化视频水印        总时长：" + duration + "秒   当前时长：" + cur + "秒   进度：" + percent + "%   用时：" + ((int)abs.TotalSeconds) + "秒";
+                    this.Text = "淡化视频水印        总时长：" + duration + "秒   当前时长：" + cur + "秒   进度：" + percent + "%   用时：" + ((int)abs.TotalSeconds) + "秒   " + this.fileName;
                 }
             }
         }
@@ -343,6 +347,7 @@ namespace RemoveWaterMar
 
                 this.picBox.Load(currentImageFile);
                 this.picBox.Refresh();
+                this.Text = "淡化视频水印       " + this.fileName;
                 notifyIcon1.ShowBalloonTip(0, "水印处理完成,耗时" + ((int)abs.TotalSeconds) + " 秒", filePath, ToolTipIcon.Info);
                 //MessageBox.Show("处理完成,用时 " + ((int)abs.TotalSeconds) + " 秒", f.Name);
             }
@@ -363,6 +368,7 @@ namespace RemoveWaterMar
                 tempName = path + "\\" + tempName + guding + ".mp4";
                 this.btnDoit.Enabled = true;
                 this.btnStop.Enabled = false;
+                this.Text = "淡化视频水印       " + this.fileName;
             }
         }
 
@@ -399,8 +405,6 @@ namespace RemoveWaterMar
 
         private void method_Click(object sender, EventArgs e)
         {
-
-
             RadioButton radioButton = sender as RadioButton;
         }
 
