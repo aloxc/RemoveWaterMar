@@ -47,9 +47,22 @@
             btnTest = new Button();
             notifyIcon1 = new NotifyIcon(components);
             contextMenuStrip1 = new ContextMenuStrip(components);
+            btnResetThumbnail = new Button();
+            btnSetScale = new Button();
+            lblWidth = new Label();
+            lblHeight = new Label();
+            tbxWidth = new TextBox();
+            tbxHeight = new TextBox();
+            grpBoxPercent = new GroupBox();
+            rbt14 = new RadioButton();
+            rbt13 = new RadioButton();
+            rbt34 = new RadioButton();
+            rbt12 = new RadioButton();
+            rbt23 = new RadioButton();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
+            grpBoxPercent.SuspendLayout();
             SuspendLayout();
             // 
             // btnOpen
@@ -65,7 +78,7 @@
             // picBox
             // 
             picBox.BorderStyle = BorderStyle.Fixed3D;
-            picBox.Location = new Point(13, 65);
+            picBox.Location = new Point(12, 189);
             picBox.Name = "picBox";
             picBox.Size = new Size(1920, 1080);
             picBox.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -78,12 +91,13 @@
             // 
             // btnDoit
             // 
-            btnDoit.Location = new Point(608, 11);
+            btnDoit.BackColor = Color.MistyRose;
+            btnDoit.Location = new Point(13, 70);
             btnDoit.Name = "btnDoit";
-            btnDoit.Size = new Size(112, 34);
+            btnDoit.Size = new Size(145, 34);
             btnDoit.TabIndex = 5;
             btnDoit.Text = "处理视频";
-            btnDoit.UseVisualStyleBackColor = true;
+            btnDoit.UseVisualStyleBackColor = false;
             btnDoit.Click += btnDoit_Click;
             // 
             // rbtnCpu
@@ -122,9 +136,9 @@
             // 
             // btnStop
             // 
-            btnStop.Location = new Point(753, 11);
+            btnStop.Location = new Point(203, 70);
             btnStop.Name = "btnStop";
-            btnStop.Size = new Size(112, 34);
+            btnStop.Size = new Size(145, 34);
             btnStop.TabIndex = 10;
             btnStop.Text = "停止处理";
             btnStop.UseVisualStyleBackColor = true;
@@ -132,9 +146,9 @@
             // 
             // btnPrevPic
             // 
-            btnPrevPic.Location = new Point(897, 11);
+            btnPrevPic.Location = new Point(393, 70);
             btnPrevPic.Name = "btnPrevPic";
-            btnPrevPic.Size = new Size(112, 34);
+            btnPrevPic.Size = new Size(145, 34);
             btnPrevPic.TabIndex = 12;
             btnPrevPic.Text = "预览图片";
             btnPrevPic.UseVisualStyleBackColor = true;
@@ -144,7 +158,7 @@
             // 
             // picBoxPrev
             // 
-            picBoxPrev.Location = new Point(1048, 21);
+            picBoxPrev.Location = new Point(609, 19);
             picBoxPrev.Name = "picBoxPrev";
             picBoxPrev.Size = new Size(22, 20);
             picBoxPrev.TabIndex = 13;
@@ -152,7 +166,7 @@
             // 
             // btnOpenOld
             // 
-            btnOpenOld.Location = new Point(1206, 12);
+            btnOpenOld.Location = new Point(13, 124);
             btnOpenOld.Name = "btnOpenOld";
             btnOpenOld.RightToLeft = RightToLeft.No;
             btnOpenOld.Size = new Size(145, 34);
@@ -163,7 +177,7 @@
             // 
             // btnOpenNew
             // 
-            btnOpenNew.Location = new Point(1383, 12);
+            btnOpenNew.Location = new Point(203, 124);
             btnOpenNew.Name = "btnOpenNew";
             btnOpenNew.Size = new Size(145, 34);
             btnOpenNew.TabIndex = 15;
@@ -173,9 +187,9 @@
             // 
             // btnHelp
             // 
-            btnHelp.Location = new Point(1557, 12);
+            btnHelp.Location = new Point(773, 70);
             btnHelp.Name = "btnHelp";
-            btnHelp.Size = new Size(112, 34);
+            btnHelp.Size = new Size(145, 34);
             btnHelp.TabIndex = 16;
             btnHelp.Text = "帮助";
             btnHelp.UseVisualStyleBackColor = true;
@@ -183,9 +197,9 @@
             // 
             // btnPrevVideo
             // 
-            btnPrevVideo.Location = new Point(1048, 12);
+            btnPrevVideo.Location = new Point(582, 70);
             btnPrevVideo.Name = "btnPrevVideo";
-            btnPrevVideo.Size = new Size(112, 34);
+            btnPrevVideo.Size = new Size(145, 34);
             btnPrevVideo.TabIndex = 17;
             btnPrevVideo.Text = "预览视频";
             btnPrevVideo.UseVisualStyleBackColor = true;
@@ -198,9 +212,9 @@
             // 
             // btnTest
             // 
-            btnTest.Location = new Point(1734, 16);
+            btnTest.Location = new Point(582, 124);
             btnTest.Name = "btnTest";
-            btnTest.Size = new Size(112, 34);
+            btnTest.Size = new Size(145, 34);
             btnTest.TabIndex = 18;
             btnTest.Text = "测试";
             btnTest.UseVisualStyleBackColor = true;
@@ -223,12 +237,144 @@
             contextMenuStrip1.Size = new Size(61, 4);
             contextMenuStrip1.Text = "处理成功";
             // 
+            // btnResetThumbnail
+            // 
+            btnResetThumbnail.Location = new Point(393, 124);
+            btnResetThumbnail.Name = "btnResetThumbnail";
+            btnResetThumbnail.Size = new Size(145, 34);
+            btnResetThumbnail.TabIndex = 19;
+            btnResetThumbnail.Text = "重获缩略图";
+            btnResetThumbnail.UseVisualStyleBackColor = true;
+            btnResetThumbnail.Click += btnResetThumbnail_Click;
+            // 
+            // btnSetScale
+            // 
+            btnSetScale.Location = new Point(773, 124);
+            btnSetScale.Name = "btnSetScale";
+            btnSetScale.Size = new Size(145, 34);
+            btnSetScale.TabIndex = 20;
+            btnSetScale.Text = "调整分辨率";
+            btnSetScale.UseVisualStyleBackColor = true;
+            btnSetScale.Click += btnSetScale_Click;
+            // 
+            // lblWidth
+            // 
+            lblWidth.AutoSize = true;
+            lblWidth.Location = new Point(946, 75);
+            lblWidth.Name = "lblWidth";
+            lblWidth.Size = new Size(46, 24);
+            lblWidth.TabIndex = 21;
+            lblWidth.Text = "宽：";
+            // 
+            // lblHeight
+            // 
+            lblHeight.AutoSize = true;
+            lblHeight.Location = new Point(946, 129);
+            lblHeight.Name = "lblHeight";
+            lblHeight.Size = new Size(46, 24);
+            lblHeight.TabIndex = 22;
+            lblHeight.Text = "高：";
+            // 
+            // tbxWidth
+            // 
+            tbxWidth.Location = new Point(987, 73);
+            tbxWidth.Name = "tbxWidth";
+            tbxWidth.Size = new Size(93, 30);
+            tbxWidth.TabIndex = 23;
+            // 
+            // tbxHeight
+            // 
+            tbxHeight.Location = new Point(987, 126);
+            tbxHeight.Name = "tbxHeight";
+            tbxHeight.Size = new Size(93, 30);
+            tbxHeight.TabIndex = 24;
+            // 
+            // grpBoxPercent
+            // 
+            grpBoxPercent.Controls.Add(rbt14);
+            grpBoxPercent.Controls.Add(rbt13);
+            grpBoxPercent.Controls.Add(rbt34);
+            grpBoxPercent.Controls.Add(rbt12);
+            grpBoxPercent.Controls.Add(rbt23);
+            grpBoxPercent.Location = new Point(1096, 51);
+            grpBoxPercent.Name = "grpBoxPercent";
+            grpBoxPercent.Size = new Size(167, 132);
+            grpBoxPercent.TabIndex = 25;
+            grpBoxPercent.TabStop = false;
+            // 
+            // rbt14
+            // 
+            rbt14.AutoSize = true;
+            rbt14.Location = new Point(6, 85);
+            rbt14.Name = "rbt14";
+            rbt14.Size = new Size(65, 28);
+            rbt14.TabIndex = 30;
+            rbt14.TabStop = true;
+            rbt14.Text = "1/4";
+            rbt14.UseVisualStyleBackColor = true;
+            rbt14.Click += rbt14_Click;
+            // 
+            // rbt13
+            // 
+            rbt13.AutoSize = true;
+            rbt13.Location = new Point(6, 49);
+            rbt13.Name = "rbt13";
+            rbt13.Size = new Size(65, 28);
+            rbt13.TabIndex = 29;
+            rbt13.TabStop = true;
+            rbt13.Text = "1/3";
+            rbt13.UseVisualStyleBackColor = true;
+            rbt13.CheckedChanged += rbt13_Click;
+            // 
+            // rbt34
+            // 
+            rbt34.AutoSize = true;
+            rbt34.Location = new Point(87, 85);
+            rbt34.Name = "rbt34";
+            rbt34.Size = new Size(65, 28);
+            rbt34.TabIndex = 28;
+            rbt34.TabStop = true;
+            rbt34.Text = "3/4";
+            rbt34.UseVisualStyleBackColor = true;
+            rbt34.Click += rbt34_Click;
+            // 
+            // rbt12
+            // 
+            rbt12.AutoSize = true;
+            rbt12.Location = new Point(6, 15);
+            rbt12.Name = "rbt12";
+            rbt12.Size = new Size(65, 28);
+            rbt12.TabIndex = 26;
+            rbt12.TabStop = true;
+            rbt12.Text = "1/2";
+            rbt12.UseVisualStyleBackColor = true;
+            rbt12.Click += rbt12_Click;
+            // 
+            // rbt23
+            // 
+            rbt23.AutoSize = true;
+            rbt23.Location = new Point(87, 15);
+            rbt23.Name = "rbt23";
+            rbt23.Size = new Size(65, 28);
+            rbt23.TabIndex = 27;
+            rbt23.TabStop = true;
+            rbt23.Text = "2/3";
+            rbt23.UseVisualStyleBackColor = true;
+            rbt23.Click += rbt23_Click;
+            // 
             // WaterMark
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(3063, 1652);
+            ClientSize = new Size(1969, 1310);
+            Controls.Add(grpBoxPercent);
+            Controls.Add(tbxHeight);
+            Controls.Add(tbxWidth);
+            Controls.Add(lblHeight);
+            Controls.Add(lblWidth);
+            Controls.Add(btnSetScale);
+            Controls.Add(btnResetThumbnail);
             Controls.Add(btnTest);
             Controls.Add(btnPrevVideo);
             Controls.Add(btnHelp);
@@ -246,7 +392,6 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "WaterMark";
             Text = "淡化视频水印";
-            WindowState = FormWindowState.Maximized;
             Load += WaterMark_Load;
             DragDrop += WaterMark_DragDrop;
             DragEnter += WaterMark_DragEnter;
@@ -255,6 +400,8 @@
             gBoxMethod.ResumeLayout(false);
             gBoxMethod.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).EndInit();
+            grpBoxPercent.ResumeLayout(false);
+            grpBoxPercent.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -278,5 +425,17 @@
         private Button btnTest;
         private NotifyIcon notifyIcon1;
         private ContextMenuStrip contextMenuStrip1;
+        private Button btnResetThumbnail;
+        private Button btnSetScale;
+        private Label lblWidth;
+        private Label lblHeight;
+        private TextBox tbxWidth;
+        private TextBox tbxHeight;
+        private GroupBox grpBoxPercent;
+        private RadioButton rbt12;
+        private RadioButton rbt34;
+        private RadioButton rbt23;
+        private RadioButton rbt14;
+        private RadioButton rbt13;
     }
 }

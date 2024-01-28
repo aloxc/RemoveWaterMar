@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -19,16 +20,25 @@ namespace RemoveWaterMar
         [DllImport("user32.dll")]
         private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
+        //视频分辨率的宽度
         private int picWidth = 0;
+        //视频分辨率的高度
         private int picHeight = 0;
         private readonly static string imageFileStart = "Snipaste";
         private readonly static string logFileStart = "log";
         private string currentImageFile = "snip.jpg";
+        //去水印后视频保存文件的后缀
         private readonly static string guding = "__WaterMarout";
+        //调整分辨率后视频保存文件的后缀
+        private readonly static string scale = "__Scale";
 
+        //需要做水印处理的x
         private int x;
+        //需要做水印处理的y
         private int y;
+        //需要做水印处理的width
         private int width;
+        //需要做水印处理的height
         private int height;
         private static int lastPercent = 0;
         private static int lastX = -1;
@@ -43,6 +53,7 @@ namespace RemoveWaterMar
         private string filePath = null;
         private string fileName = null;
         private int duration = 0;
+        private int durationMilliseconds = 0;
         private TimeSpan spendTime;
         private Process process;
         private bool processing = false;
@@ -74,7 +85,7 @@ namespace RemoveWaterMar
         private void btnOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "视频文件(*.mp4)|*.mp4";
+            openFileDialog.Filter = "视频文件(*.mp4,*.mkv)|*.mp4;*.mkv";
             openFileDialog.RestoreDirectory = true;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -111,15 +122,23 @@ namespace RemoveWaterMar
             //MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token).GetAwaiter().GetResult();
             MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
             duration = (int)data.Duration.TotalSeconds;
+            durationMilliseconds = (int)data.Duration.TotalMilliseconds;
             string frameSize = data.VideoData.FrameSize;
             string[] frameInfo = frameSize.Split("x");
             picWidth = Int32.Parse(frameInfo[0]);
             picHeight = Int32.Parse(frameInfo[1]);
-
+            this.tbxHeight.Text = Convert.ToString(picHeight);
+            this.tbxWidth.Text = Convert.ToString(picWidth);
+            this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             currentImageFile = "./" + imageFileStart + Convert.ToInt64(ts.TotalMilliseconds).ToString() + ".jpg";
             var outputFile = new OutputFile(currentImageFile);
-            await ffmpeg.GetThumbnailAsync(inputFile, outputFile, token);
+            Random random = new Random();
+            ConversionOptions conversionOptions = new ConversionOptions()
+            {
+                Seek = TimeSpan.FromMilliseconds(random.Next(1, durationMilliseconds - 1))
+            };
+            await ffmpeg.GetThumbnailAsync(inputFile, outputFile, conversionOptions, token);
             this.picBox.Load(currentImageFile);
             pic = new Bitmap(this.picBox.Image, this.picBox.Width, this.picBox.Height);
             picGraphics = Graphics.FromImage(this.picBox.Image);
@@ -128,6 +147,29 @@ namespace RemoveWaterMar
         }
         private Graphics picGraphics;
         private Bitmap pic = null;
+        private void btnResetThumbnail_Click(object sender, EventArgs e)
+        {
+            ResetThumbnail_Click();
+        }
+        private async void ResetThumbnail_Click()
+        {
+            CancellationToken token = new CancellationToken();
+            TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            currentImageFile = "./" + imageFileStart + Convert.ToInt64(ts.TotalMilliseconds).ToString() + ".jpg";
+            var outputFile = new OutputFile(currentImageFile);
+            Random random = new Random();
+            ConversionOptions conversionOptions = new ConversionOptions()
+            {
+                Seek = TimeSpan.FromMilliseconds(random.Next(1, durationMilliseconds - 1))
+            };
+            Engine ffmpeg = new Engine(@"ffmpeg.exe");
+            var inputFile = new InputFile(filePath);
+            await ffmpeg.GetThumbnailAsync(inputFile, outputFile, conversionOptions, token);
+            this.picBox.Load(currentImageFile);
+            pic = new Bitmap(this.picBox.Image, this.picBox.Width, this.picBox.Height);
+            picGraphics = Graphics.FromImage(this.picBox.Image);
+            perMaskWidth = pic.Width / 100;
+        }
 
         private void picBox_MouseMove(object sender, MouseEventArgs e)
         {
@@ -160,6 +202,12 @@ namespace RemoveWaterMar
 
         private void btnPrevPic_Click(object sender, EventArgs e)
         {
+            if (read == false) return;
+            if (draw == false)
+            {
+                return;
+            }
+
             Process preProcess = new Process();
             preProcess.StartInfo.FileName = "ffmpeg";
             preProcess.StartInfo.WorkingDirectory = "./";
@@ -180,8 +228,8 @@ namespace RemoveWaterMar
             preProcess.EnableRaisingEvents = true;
 
             preProcess.Exited += new EventHandler(prevPicExited);
-
             preProcess.Start();
+
             //开始异步读取输出
             preProcess.BeginOutputReadLine();
             preProcess.BeginErrorReadLine();
@@ -235,7 +283,8 @@ namespace RemoveWaterMar
             //MessageBox.Show(f.Name);
             spendTime = new TimeSpan(DateTime.Now.Ticks);
 
-            string tempName = f.Name.Split(".")[0];
+            string tempName = f.Name.Remove(f.Name.LastIndexOf("."));
+
             process = new Process();
             process.StartInfo.FileName = "ffmpeg";
             process.StartInfo.WorkingDirectory = path;
@@ -265,6 +314,8 @@ namespace RemoveWaterMar
             process.BeginErrorReadLine();
             processing = true;
             this.btnDoit.Enabled = false;
+            this.btnSetScale.Enabled = false;
+            this.btnResetThumbnail.Enabled = false;
             this.btnStop.Enabled = true;
         }
 
@@ -282,9 +333,6 @@ namespace RemoveWaterMar
             notifyStatus = !notifyStatus;
         }
 
-        private void btnOut_CheckedChanged(object sender, EventArgs e)
-        {
-        }
         void p_OutputDataReceived(Object sender, DataReceivedEventArgs e)
         {
             //这里是正常的输出
@@ -343,15 +391,17 @@ namespace RemoveWaterMar
 
                 processing = false;
                 this.btnDoit.Enabled = true;
+                this.btnSetScale.Enabled = true;
+                this.btnResetThumbnail.Enabled = true;
                 this.btnStop.Enabled = false;
 
                 this.picBox.Load(currentImageFile);
                 this.picBox.Refresh();
-                this.Text = "淡化视频水印       " + this.fileName;
+                this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
                 notifyIcon1.ShowBalloonTip(0, "水印处理完成,耗时" + ((int)abs.TotalSeconds) + " 秒", filePath, ToolTipIcon.Info);
                 //MessageBox.Show("处理完成,用时 " + ((int)abs.TotalSeconds) + " 秒", f.Name);
             }
-            this.Text = "淡化视频水印";
+            this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -364,9 +414,9 @@ namespace RemoveWaterMar
                 string path = Path.GetDirectoryName(filePath);
                 FileInfo f = new FileInfo(filePath);
                 spendTime = new TimeSpan(DateTime.Now.Ticks);
-                string tempName = f.Name.Split(".")[0];
-                tempName = path + "\\" + tempName + guding + ".mp4";
                 this.btnDoit.Enabled = true;
+                this.btnSetScale.Enabled = true;
+                this.btnResetThumbnail.Enabled = true;
                 this.btnStop.Enabled = false;
                 this.Text = "淡化视频水印       " + this.fileName;
             }
@@ -392,7 +442,7 @@ namespace RemoveWaterMar
         {
             FileInfo f = new FileInfo(filePath);
             string path = Path.GetDirectoryName(filePath);
-            string tempName = f.Name.Split(".")[0];
+            string tempName = f.Name.Remove(f.Name.LastIndexOf("."));
             string outPath = path + "\\" + tempName + guding + ".mp4";
 
             if (outPath == null || outPath.Length == 0 || !File.Exists(outPath))
@@ -468,7 +518,7 @@ namespace RemoveWaterMar
 
         private void WaterMark_DragEnter(object sender, DragEventArgs e)
         {
-            
+
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effect = DragDropEffects.Copy;
             //MessageBox.Show("drag");
@@ -477,21 +527,196 @@ namespace RemoveWaterMar
         private void WaterMark_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if(files.Length > 1)
+            if (files.Length > 1)
             {
                 MessageBox.Show("只能拖放一个视频文件");
                 return;
             }
             string f = files[0];
-            if (!f.ToLower().EndsWith(".mp4"))
+            if (!f.ToLower().EndsWith(".mp4") && !f.ToLower().EndsWith(".mkv"))
             {
-                MessageBox.Show("只能视频文件(.mp4)");
+                MessageBox.Show("只能视频文件(.mp4和.mkv)");
                 return;
             }
             filePath = f;
             openVideoHander();
 
 
+        }
+
+        private void btnSetScale_Click(object sender, EventArgs e)
+        {
+            if (filePath == null)
+            {
+                ScaleForm scaleForm = new ScaleForm();
+                scaleForm.ShowDialog();
+                return;
+            }
+            if (this.tbxWidth.Text.Trim().Equals(""))
+            {
+                MessageBox.Show("新的宽度不能为空");
+                return;
+            }
+            if (this.tbxHeight.Text.Trim().Equals(""))
+            {
+                MessageBox.Show("新的高度不能为空");
+                return;
+            }
+            if (Convert.ToInt32(this.tbxWidth.Text) == this.picWidth && Convert.ToInt32(this.tbxHeight.Text) == this.picHeight)
+            {
+                MessageBox.Show("新的宽度和高度不能和原视频一样");
+                return;
+            }
+
+            /*bool Debug = true;
+            if(Debug == true)
+            {
+                return;
+            }*/
+
+            string path = Path.GetDirectoryName(filePath);
+            FileInfo f = new FileInfo(filePath);
+            //MessageBox.Show(f.Name);
+            spendTime = new TimeSpan(DateTime.Now.Ticks);
+            string tempName = f.Name.Remove(f.Name.LastIndexOf("."));
+            process = new Process();
+            process.StartInfo.FileName = "ffmpeg";
+            process.StartInfo.WorkingDirectory = path;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            string param = "-i \"" + filePath + "\" -vf  scale=" + this.tbxWidth.Text + ":" + this.tbxHeight.Text + " \"" + path + "\\" + tempName + scale + ".mp4\" -y";
+            if (rbtnGpu.Checked)
+            {
+                param = "-i \"" + filePath + "\" -vf  scale=" + this.tbxWidth.Text + ":" + this.tbxHeight.Text + " -c:v h264_nvenc -gpu 0 \"" + path + "\\" + tempName + scale + ".mp4\" -y";
+            }
+            Log.Debug(param);
+            process.StartInfo.Arguments = param;
+            process.StartInfo.CreateNoWindow = true;//显示命令行窗口
+            //不使用操作系统使用的shell启动进程
+            process.StartInfo.UseShellExecute = false;
+            //将输出信息重定向
+            process.StartInfo.RedirectStandardInput = true;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.EnableRaisingEvents = true;
+
+            process.Exited += new EventHandler(scale_Exited);
+            process.OutputDataReceived += new DataReceivedEventHandler(scale_OutputDataReceived);
+            process.ErrorDataReceived += new DataReceivedEventHandler(scale_ErrorDataReceived);
+
+            process.Start();
+            //开始异步读取输出
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            processing = true;
+            this.btnDoit.Enabled = false;
+            this.btnSetScale.Enabled = false;
+            this.btnResetThumbnail.Enabled = false;
+            this.btnStop.Enabled = true;
+        }
+
+        void scale_OutputDataReceived(Object sender, DataReceivedEventArgs e)
+        {
+            //这里是正常的输出
+            //Log.Information("out " + e.Data);
+        }
+
+
+        void scale_ErrorDataReceived(Object sender, DataReceivedEventArgs e)
+        {
+            //这里得到的是错误信息
+            string info = e.Data;
+            if (info != null && info.Contains("frame") && info.Contains("fps") && info.Contains("size") && info.Contains("time") && info.Contains("bitrate") && info.Contains("speed"))
+            {
+                //string s = "frame= 2700 fps=178 q=26.0 size=   15616kB time=00:01:31.90 bitrate=1391.9kbits/s speed=6.07x";
+                string r = "^frame.+time=(.+)bitrate=.+";
+                Match match = Regex.Match(info, r);
+                if (match.Success)
+                {
+                    string time = match.Groups[1].Value;
+                    if (time.Contains("."))
+                    {
+                        time = time.Split(".")[0];
+                    }
+                    string[] times = time.Split(":");
+                    int cur = int.Parse(times[0]) * 60 * 60 + int.Parse(times[1]) * 60 + int.Parse(times[2]);
+                    double rx = Math.Round((Convert.ToDouble(cur) / Convert.ToDouble(duration)), 2) * 100;
+                    int percent = Convert.ToInt32(rx);
+
+                    if (lastPercent != percent)
+                    {
+                        int curLineWidth = (lastPercent + 1) * perMaskWidth;
+                        int curLineCenter = (lastPercent + 1) * perMaskWidth;// + perAlphaWidth / 2;
+                        Pen pen = new Pen(maskColor, curLineWidth);
+                        //Log.Information("lastAlpha:" + lastPercent + ",percent:" + percent + ",curLineCenter:" + curLineCenter + ",picHeight:" + picHeight + ",lastPercent:" + lastPercent);
+                        this.picBox.Load(currentImageFile);
+                        Graphics.FromImage(this.picBox.Image).DrawLine(pen, new Point(curLineWidth / 2, 0), new Point(curLineWidth / 2, pic.Height));
+                        lastPercent = percent;
+                        this.picBox.Refresh();
+                    }
+                    TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
+                    TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
+                    this.Text = "分辨率调整        总时长：" + duration + "秒   当前时长：" + cur + "秒   进度：" + percent + "%   用时：" + ((int)abs.TotalSeconds) + "秒   " + this.fileName + "  " + time;
+                }
+            }
+        }
+
+        void scale_Exited(Object sender, EventArgs e)
+        {
+            if (processing)
+            {
+                graphics.Dispose();
+                FileInfo f = new FileInfo(filePath);
+                TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
+                TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
+                                                                        //removeWaterTimer.Enabled = false;
+
+                processing = false;
+                this.btnDoit.Enabled = true;
+                this.btnSetScale.Enabled = true;
+                this.btnResetThumbnail.Enabled = true;
+                this.btnStop.Enabled = false;
+
+                this.picBox.Load(currentImageFile);
+                this.picBox.Refresh();
+                this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
+                notifyIcon1.ShowBalloonTip(0, "分辨率调整完成,耗时" + ((int)abs.TotalSeconds) + " 秒", filePath, ToolTipIcon.Info);
+                //MessageBox.Show("处理完成,用时 " + ((int)abs.TotalSeconds) + " 秒", f.Name);
+            }
+            this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
+        }
+
+        private void rbt12_Click(object sender, EventArgs e)
+        {
+            setScaleSize(1, 2);
+        }
+
+        private void rbt23_Click(object sender, EventArgs e)
+        {
+            setScaleSize(2, 3);
+        }
+
+        private void rbt34_Click(object sender, EventArgs e)
+        {
+            setScaleSize(3, 4);
+        }
+
+        private void rbt14_Click(object sender, EventArgs e)
+        {
+            setScaleSize(1, 4);
+        }
+
+        private void rbt13_Click(object sender, EventArgs e)
+        {
+            setScaleSize(1, 3);
+        }
+        private void setScaleSize(int min, int max)
+        {
+            if (filePath == null)
+            {
+                return;
+            }
+            this.tbxWidth.Text = Convert.ToString(this.picWidth * min / max);
+            this.tbxHeight.Text = Convert.ToString(this.picHeight * min / max);
         }
     }
 }
