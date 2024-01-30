@@ -562,7 +562,7 @@ namespace RemoveWaterMar
                 MessageBox.Show(tips);
                 return;
             }
-           
+
             filePath = f;
             openVideoHander();
 
@@ -709,7 +709,10 @@ namespace RemoveWaterMar
             }
             this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
         }
-
+        private void rbt11_Click(object sender, EventArgs e)
+        {
+            setScaleSize(1, 1);
+        }
         private void rbt12_Click(object sender, EventArgs e)
         {
             setScaleSize(1, 2);
@@ -743,5 +746,7 @@ namespace RemoveWaterMar
             this.tbxWidth.Text = Convert.ToString(this.picWidth * min / max);
             this.tbxHeight.Text = Convert.ToString(this.picHeight * min / max);
         }
+
+
     }
 }

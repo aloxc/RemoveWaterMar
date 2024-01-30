@@ -54,6 +54,7 @@
             tbxWidth = new TextBox();
             tbxHeight = new TextBox();
             grpBoxPercent = new GroupBox();
+            rbt11 = new RadioButton();
             rbt14 = new RadioButton();
             rbt13 = new RadioButton();
             rbt34 = new RadioButton();
@@ -291,6 +292,7 @@
             // 
             // grpBoxPercent
             // 
+            grpBoxPercent.Controls.Add(rbt11);
             grpBoxPercent.Controls.Add(rbt14);
             grpBoxPercent.Controls.Add(rbt13);
             grpBoxPercent.Controls.Add(rbt34);
@@ -298,14 +300,26 @@
             grpBoxPercent.Controls.Add(rbt23);
             grpBoxPercent.Location = new Point(1096, 51);
             grpBoxPercent.Name = "grpBoxPercent";
-            grpBoxPercent.Size = new Size(167, 132);
+            grpBoxPercent.Size = new Size(167, 120);
             grpBoxPercent.TabIndex = 25;
             grpBoxPercent.TabStop = false;
+            // 
+            // rbt11
+            // 
+            rbt11.AutoSize = true;
+            rbt11.Location = new Point(6, 17);
+            rbt11.Name = "rbt11";
+            rbt11.Size = new Size(65, 28);
+            rbt11.TabIndex = 26;
+            rbt11.TabStop = true;
+            rbt11.Text = "1/1";
+            rbt11.UseVisualStyleBackColor = true;
+            rbt11.Click += rbt11_Click;
             // 
             // rbt14
             // 
             rbt14.AutoSize = true;
-            rbt14.Location = new Point(6, 85);
+            rbt14.Location = new Point(87, 15);
             rbt14.Name = "rbt14";
             rbt14.Size = new Size(65, 28);
             rbt14.TabIndex = 30;
@@ -317,14 +331,14 @@
             // rbt13
             // 
             rbt13.AutoSize = true;
-            rbt13.Location = new Point(6, 49);
+            rbt13.Location = new Point(6, 85);
             rbt13.Name = "rbt13";
             rbt13.Size = new Size(65, 28);
             rbt13.TabIndex = 29;
             rbt13.TabStop = true;
             rbt13.Text = "1/3";
             rbt13.UseVisualStyleBackColor = true;
-            rbt13.CheckedChanged += rbt13_Click;
+            rbt13.Click += rbt13_Click;
             // 
             // rbt34
             // 
@@ -341,7 +355,7 @@
             // rbt12
             // 
             rbt12.AutoSize = true;
-            rbt12.Location = new Point(6, 15);
+            rbt12.Location = new Point(6, 51);
             rbt12.Name = "rbt12";
             rbt12.Size = new Size(65, 28);
             rbt12.TabIndex = 26;
@@ -353,7 +367,7 @@
             // rbt23
             // 
             rbt23.AutoSize = true;
-            rbt23.Location = new Point(87, 15);
+            rbt23.Location = new Point(87, 51);
             rbt23.Name = "rbt23";
             rbt23.Size = new Size(65, 28);
             rbt23.TabIndex = 27;
@@ -437,5 +451,6 @@
         private RadioButton rbt23;
         private RadioButton rbt14;
         private RadioButton rbt13;
+        private RadioButton rbt11;
     }
 }

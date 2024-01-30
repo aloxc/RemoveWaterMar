@@ -38,6 +38,10 @@ namespace RemoveWaterMar
 
         private (int min, int max) getScaleSize()
         {
+            if (rbt11.Checked)
+            {
+                return (1, 1);
+            }
             if (rbt12.Checked)
             {
                 return (1, 2);

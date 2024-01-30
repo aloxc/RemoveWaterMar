@@ -49,6 +49,7 @@
             lblTaskCount = new Label();
             lblDoneCount = new Label();
             lblLog = new Label();
+            rbt11 = new RadioButton();
             grpBoxPercent.SuspendLayout();
             gBoxMethod.SuspendLayout();
             SuspendLayout();
@@ -65,6 +66,7 @@
             // 
             // grpBoxPercent
             // 
+            grpBoxPercent.Controls.Add(rbt11);
             grpBoxPercent.Controls.Add(rbt14);
             grpBoxPercent.Controls.Add(rbt13);
             grpBoxPercent.Controls.Add(rbt34);
@@ -72,7 +74,7 @@
             grpBoxPercent.Controls.Add(rbt23);
             grpBoxPercent.Location = new Point(12, 76);
             grpBoxPercent.Name = "grpBoxPercent";
-            grpBoxPercent.Size = new Size(211, 218);
+            grpBoxPercent.Size = new Size(211, 146);
             grpBoxPercent.TabIndex = 26;
             grpBoxPercent.TabStop = false;
             grpBoxPercent.Text = "缩放比例";
@@ -80,7 +82,7 @@
             // rbt14
             // 
             rbt14.AutoSize = true;
-            rbt14.Location = new Point(6, 109);
+            rbt14.Location = new Point(108, 39);
             rbt14.Name = "rbt14";
             rbt14.Size = new Size(65, 28);
             rbt14.TabIndex = 30;
@@ -91,7 +93,7 @@
             // rbt13
             // 
             rbt13.AutoSize = true;
-            rbt13.Location = new Point(6, 73);
+            rbt13.Location = new Point(6, 109);
             rbt13.Name = "rbt13";
             rbt13.Size = new Size(65, 28);
             rbt13.TabIndex = 29;
@@ -102,7 +104,7 @@
             // rbt34
             // 
             rbt34.AutoSize = true;
-            rbt34.Location = new Point(6, 177);
+            rbt34.Location = new Point(108, 109);
             rbt34.Name = "rbt34";
             rbt34.Size = new Size(65, 28);
             rbt34.TabIndex = 28;
@@ -113,7 +115,7 @@
             // rbt12
             // 
             rbt12.AutoSize = true;
-            rbt12.Location = new Point(6, 39);
+            rbt12.Location = new Point(6, 75);
             rbt12.Name = "rbt12";
             rbt12.Size = new Size(65, 28);
             rbt12.TabIndex = 26;
@@ -124,7 +126,7 @@
             // rbt23
             // 
             rbt23.AutoSize = true;
-            rbt23.Location = new Point(6, 143);
+            rbt23.Location = new Point(108, 75);
             rbt23.Name = "rbt23";
             rbt23.Size = new Size(65, 28);
             rbt23.TabIndex = 27;
@@ -134,7 +136,7 @@
             // 
             // btnDoit
             // 
-            btnDoit.Location = new Point(12, 450);
+            btnDoit.Location = new Point(12, 391);
             btnDoit.Name = "btnDoit";
             btnDoit.Size = new Size(211, 34);
             btnDoit.TabIndex = 28;
@@ -164,7 +166,7 @@
             // 
             gBoxMethod.Controls.Add(rbtnCpu);
             gBoxMethod.Controls.Add(rbtnGpu);
-            gBoxMethod.Location = new Point(12, 300);
+            gBoxMethod.Location = new Point(12, 241);
             gBoxMethod.Name = "gBoxMethod";
             gBoxMethod.Size = new Size(211, 129);
             gBoxMethod.TabIndex = 30;
@@ -195,7 +197,7 @@
             // 
             // btnStop
             // 
-            btnStop.Location = new Point(9, 515);
+            btnStop.Location = new Point(9, 456);
             btnStop.Name = "btnStop";
             btnStop.Size = new Size(214, 34);
             btnStop.TabIndex = 31;
@@ -205,7 +207,7 @@
             // 
             // btnClear
             // 
-            btnClear.Location = new Point(6, 580);
+            btnClear.Location = new Point(6, 521);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(217, 34);
             btnClear.TabIndex = 32;
@@ -215,7 +217,7 @@
             // 
             // btnDeleteSelect
             // 
-            btnDeleteSelect.Location = new Point(6, 645);
+            btnDeleteSelect.Location = new Point(6, 586);
             btnDeleteSelect.Name = "btnDeleteSelect";
             btnDeleteSelect.Size = new Size(217, 34);
             btnDeleteSelect.TabIndex = 33;
@@ -225,7 +227,7 @@
             // 
             // btnDeleteDone
             // 
-            btnDeleteDone.Location = new Point(9, 710);
+            btnDeleteDone.Location = new Point(9, 651);
             btnDeleteDone.Name = "btnDeleteDone";
             btnDeleteDone.Size = new Size(217, 34);
             btnDeleteDone.TabIndex = 34;
@@ -237,7 +239,7 @@
             // 
             lblTimeTotal.AutoSize = true;
             lblTimeTotal.ForeColor = Color.Red;
-            lblTimeTotal.Location = new Point(3, 834);
+            lblTimeTotal.Location = new Point(3, 775);
             lblTimeTotal.Name = "lblTimeTotal";
             lblTimeTotal.Size = new Size(103, 24);
             lblTimeTotal.TabIndex = 36;
@@ -247,7 +249,7 @@
             // 
             lblTaskCount.AutoSize = true;
             lblTaskCount.ForeColor = Color.Red;
-            lblTaskCount.Location = new Point(6, 759);
+            lblTaskCount.Location = new Point(6, 700);
             lblTaskCount.Name = "lblTaskCount";
             lblTaskCount.Size = new Size(91, 24);
             lblTaskCount.TabIndex = 37;
@@ -257,7 +259,7 @@
             // 
             lblDoneCount.AutoSize = true;
             lblDoneCount.ForeColor = Color.Red;
-            lblDoneCount.Location = new Point(6, 797);
+            lblDoneCount.Location = new Point(6, 738);
             lblDoneCount.Name = "lblDoneCount";
             lblDoneCount.Size = new Size(91, 24);
             lblDoneCount.TabIndex = 38;
@@ -271,6 +273,17 @@
             lblLog.Name = "lblLog";
             lblLog.Size = new Size(1537, 24);
             lblLog.TabIndex = 39;
+            // 
+            // rbt11
+            // 
+            rbt11.AutoSize = true;
+            rbt11.Location = new Point(6, 39);
+            rbt11.Name = "rbt11";
+            rbt11.Size = new Size(65, 28);
+            rbt11.TabIndex = 31;
+            rbt11.TabStop = true;
+            rbt11.Text = "1/1";
+            rbt11.UseVisualStyleBackColor = true;
             // 
             // ScaleForm
             // 
@@ -332,5 +345,6 @@
         private Label lblTaskCount;
         private Label lblDoneCount;
         private Label lblLog;
+        private RadioButton rbt11;
     }
 }
