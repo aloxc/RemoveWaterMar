@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RemoveWaterMar
@@ -34,7 +35,11 @@ namespace RemoveWaterMar
         private readonly static string scaleName = "__Scale";
         private int index = 0;
         private TimeSpan spendTime;
+        private TimeSpan spendTimeTotal;
         Semaphore semaphore = null;
+        private int taskCount = 0;
+        private int doneCount = 0;
+        private string outFile = null;
 
 
         public ScaleForm()
@@ -98,10 +103,13 @@ namespace RemoveWaterMar
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                foreach (string f in openFileDialog.FileNames)
+
+                string[] files = openFileDialog.FileNames;
+                for (int i = 0; i < files.Length; i++)
                 {
+                    string f = files[i];
                     var inputFile = new InputFile(f);
-                    GetVideoInfo(inputFile);
+                    GetVideoInfo(i, inputFile);
                 }
             }
             else
@@ -139,10 +147,10 @@ namespace RemoveWaterMar
             {
                 string f = files[i];
                 var inputFile = new InputFile(f);
-                GetVideoInfo(inputFile);
+                GetVideoInfo(i,inputFile);
             }
         }
-        public async void GetVideoInfo(InputFile inputFile)
+        public async void GetVideoInfo(int i,InputFile inputFile)
         {
             MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
             int seconds = (int)data.Duration.TotalSeconds;
@@ -151,7 +159,29 @@ namespace RemoveWaterMar
 
             string frameSize = data.VideoData.FrameSize;
             Log.Debug(inputFile.Name + ";" + frameSize);
-            lbxFile.Items.Add(new ListViewItem(new string[] { inputFile.Name, timeString, frameSize, "0" }));
+            ListViewItem item = lbxFile.Items.Add(new ListViewItem(new string[] { inputFile.Name, timeString, frameSize, "0","" }));
+            item.UseItemStyleForSubItems = false;
+            
+            if (i % 2 == 0)
+            {
+                item.SubItems[0].BackColor = Color.Gainsboro;
+                item.SubItems[1].BackColor = Color.Gainsboro;
+                item.SubItems[2].BackColor = Color.Gainsboro;
+                item.SubItems[3].BackColor = Color.Gainsboro;
+                item.SubItems[4].BackColor = Color.Gainsboro;
+            }
+            else
+            {
+                item.SubItems[0].BackColor = Color.MistyRose;
+                item.SubItems[1].BackColor = Color.MistyRose;
+                item.SubItems[2].BackColor = Color.MistyRose;
+                item.SubItems[3].BackColor = Color.MistyRose;
+                item.SubItems[4].BackColor = Color.MistyRose;
+            }
+            taskCount++;
+            this.lblTaskCount.Text = "总任务 " + taskCount;
+            this.lblDoneCount.Text = "已完成 " + doneCount;
+            
         }
 
         private void ScaleForm_Load(object sender, EventArgs e)
@@ -160,17 +190,20 @@ namespace RemoveWaterMar
             lbxFile.View = View.Details;
 
             this.lbxFile.Columns.Add("文件", 780, HorizontalAlignment.Left);
-            this.lbxFile.Columns.Add("时长(秒)", 150, HorizontalAlignment.Left);
+            this.lbxFile.Columns.Add("时长", 100, HorizontalAlignment.Left);
             this.lbxFile.Columns.Add("分辨率", 150, HorizontalAlignment.Left);
             this.lbxFile.Columns.Add("进度", 200, HorizontalAlignment.Left);
+            this.lbxFile.Columns.Add("用时", 50, HorizontalAlignment.Left);
             this.btnStop.Enabled = false;
 
             this.lbxFile.ProgressTextColor = Color.Red;
             this.lbxFile.ProgressColor = Color.YellowGreen;
+
+            this.lblDoneCount.Text = "";
+            this.lblTaskCount.Text = "";
+            this.lblTimeTotal.Text = "";
+            this.lblLog.Visible = false;
         }
-
-
-
 
         private void lbxFile_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
@@ -183,69 +216,80 @@ namespace RemoveWaterMar
         }
         private void btnDoit_Click(object sender, EventArgs e)
         {
-            if (!checkScaleButton())
+            //Task.Run(()=>doTask());
+            Task.Run(() =>
             {
-                MessageBox.Show("请选择缩放比例");
-                return;
-            }
-            int count = lbxFile.Items.Count;
-            if (count == 0)
-            {
-                MessageBox.Show("请添加需要处理的文件");
-                return;
-            }
-            semaphore = new Semaphore(1,1);
-            for (int i = 0; i < count; i++)
-            {
-                semaphore.WaitOne();
-                index = i;
-                spendTime = new TimeSpan(DateTime.Now.Ticks);
-                string filePath = lbxFile.Items[i].SubItems[0].Text;
-                string percentColum = lbxFile.Items[i].SubItems[3].Text;
-                FileInfo f = new FileInfo(filePath);
-                string path = Path.GetDirectoryName(filePath);
-                string tempName = f.Name.Remove(f.Name.LastIndexOf("."));
-                process = new Process();
-                process.StartInfo.FileName = "ffmpeg";
-                process.StartInfo.WorkingDirectory = path;
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                string frameSize = lbxFile.Items[i].SubItems[2].Text;
-                var size = getNewSize(frameSize);
-                string param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " \"" + path + "\\" + tempName + scaleName + ".mp4\" -y";
-                if (rbtnGpu.Checked)
+                spendTimeTotal = new TimeSpan(DateTime.Now.Ticks);
+
+                if (!checkScaleButton())
                 {
-                    param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " -c:v h264_nvenc -gpu 0 \"" + path + "\\" + tempName + scaleName + ".mp4\" -y";
+                    MessageBox.Show("请选择缩放比例");
+                    return;
                 }
-                Log.Debug(param);
-                process.StartInfo.Arguments = param;
-                process.StartInfo.CreateNoWindow = true;//显示命令行窗口
-                                                        //不使用操作系统使用的shell启动进程
-                process.StartInfo.UseShellExecute = false;
-                //将输出信息重定向
-                process.StartInfo.RedirectStandardInput = true;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.EnableRaisingEvents = true;
+                int count = lbxFile.Items.Count;
+                if (count == 0)
+                {
+                    MessageBox.Show("请添加需要处理的文件");
+                    return;
+                }
+                semaphore = new Semaphore(1, 1);
+                for (int i = 0; i < count; i++)
+                {
+                    semaphore.WaitOne();
+                    index = i;
+                    spendTime = new TimeSpan(DateTime.Now.Ticks);
+                    string filePath = lbxFile.Items[i].SubItems[0].Text;
+                    string percentColum = lbxFile.Items[i].SubItems[3].Text;
+                    FileInfo f = new FileInfo(filePath);
+                    string path = Path.GetDirectoryName(filePath);
+                    string tempName = f.Name.Remove(f.Name.LastIndexOf("."));
+                    process = new Process();
+                    process.StartInfo.FileName = "ffmpeg";
+                    process.StartInfo.WorkingDirectory = path;
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                    string frameSize = lbxFile.Items[i].SubItems[2].Text;
+                    outFile = path + "\\" + tempName + scaleName + ".mp4";
+                    var size = getNewSize(frameSize);
+                    this.lblLog.Visible = true;
+                    string param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " \"" + outFile + "\" -y";
+                    if (rbtnGpu.Checked)
+                    {
+                        param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " -c:v h264_nvenc -gpu 0 \"" + outFile +"\" -y";
+                    }
+                    Log.Debug(param);
+                    process.StartInfo.Arguments = param;
+                    process.StartInfo.CreateNoWindow = true;//显示命令行窗口
+                                                            //不使用操作系统使用的shell启动进程
+                    process.StartInfo.UseShellExecute = false;
+                    //将输出信息重定向
+                    process.StartInfo.RedirectStandardInput = true;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                    process.EnableRaisingEvents = true;
 
-                process.Exited += new EventHandler(scale_Exited);
-                process.OutputDataReceived += new DataReceivedEventHandler(scale_OutputDataReceived);
-                process.ErrorDataReceived += new DataReceivedEventHandler(scale_ErrorDataReceived);
+                    process.Exited += new EventHandler(scale_Exited);
+                    process.OutputDataReceived += new DataReceivedEventHandler(scale_OutputDataReceived);
+                    process.ErrorDataReceived += new DataReceivedEventHandler(scale_ErrorDataReceived);
 
-                process.Start();
-                //开始异步读取输出
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                processing = true;
-                this.btnDoit.Enabled = false;
-                this.btnStop.Enabled = true;
-                this.btnOpen.Enabled = false;
-            }
+                    process.Start();
+                    //开始异步读取输出
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                    processing = true;
+                    this.btnDoit.Enabled = false;
+                    this.btnStop.Enabled = true;
+                    this.btnOpen.Enabled = false;
+                }
+            });
         }
 
         void scale_OutputDataReceived(Object sender, DataReceivedEventArgs e)
         {
             //这里是正常的输出
-            //Log.Information("out " + e.Data);
+            //执行过程中停止了
+            Log.Information("out " + e.Data);
+            FileInfo f = new FileInfo(outFile);
+            f.Delete();
         }
 
 
@@ -255,6 +299,7 @@ namespace RemoveWaterMar
             string info = e.Data;
             if (info != null && info.Contains("frame") && info.Contains("fps") && info.Contains("size") && info.Contains("time") && info.Contains("bitrate") && info.Contains("speed"))
             {
+                lblLog.Text = info;
                 //string s = "frame= 2700 fps=178 q=26.0 size=   15616kB time=00:01:31.90 bitrate=1391.9kbits/s speed=6.07x";
                 string r = "^frame.+time=(.+)bitrate=.+";
                 Match match = Regex.Match(info, r);
@@ -273,6 +318,12 @@ namespace RemoveWaterMar
                     int percent = Convert.ToInt32(rx);
 
                     lbxFile.Items[index].SubItems[3].Text = Convert.ToString(percent);
+
+                    TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
+                    TimeSpan abs = end.Subtract(spendTime).Duration();
+                    TimeSpan absTotal = end.Subtract(spendTimeTotal).Duration();
+                    lbxFile.Items[index].SubItems[4].Text = Convert.ToString((int)abs.TotalSeconds);
+                    this.lblTimeTotal.Text  = "总用时 " + ((int)absTotal.TotalSeconds) + " 秒";
                 }
             }
         }
@@ -288,6 +339,11 @@ namespace RemoveWaterMar
                 this.btnDoit.Enabled = true;
                 this.btnStop.Enabled = false;
                 this.btnOpen.Enabled = true;
+
+                doneCount++;
+                this.lblDoneCount.Text = "已完成 " + doneCount;
+                lblLog.Text = "";
+                this.lblLog.Visible = false;
                 semaphore.Release();
             }
         }
@@ -297,10 +353,13 @@ namespace RemoveWaterMar
             if (processing)
             {
                 process.Kill();
-                processing = false;
+                //processing = false;
                 this.btnDoit.Enabled = true;
                 this.btnStop.Enabled = false;
                 this.btnOpen.Enabled = true;
+                lblLog.Text = "";
+
+                this.lblLog.Visible = false;
             }
         }
 
@@ -310,8 +369,13 @@ namespace RemoveWaterMar
             {
                 if (item.SubItems[3].Text.Contains("100"))
                 {
+                    if (doneCount > 0)
+                    {
+                        doneCount--;
+                    }
                     lbxFile.Items.Remove(item);
                 }
+                this.lblDoneCount.Text = "已完成 " + doneCount;
             }
         }
 
@@ -319,6 +383,23 @@ namespace RemoveWaterMar
         {
             foreach (ListViewItem item in lbxFile.SelectedItems)
             {
+                if (item.SubItems[3].Text.Contains("100"))
+                {
+                    if (doneCount > 0)
+                    {
+                        doneCount--;
+                    }
+                    this.lblDoneCount.Text = "已完成 " + doneCount;
+                    lbxFile.Items.Remove(item);
+                }
+                else
+                {
+                    if (taskCount > 0)
+                    {
+                        taskCount--;
+                    }
+                    this.lblTaskCount.Text = "总任务 " + taskCount;
+                }
                 lbxFile.Items.Remove(item);
             }
         }
@@ -329,6 +410,10 @@ namespace RemoveWaterMar
             {
                 lbxFile.Items.Remove(item);
             }
+            taskCount = 0;
+            doneCount = 0;
+            this.lblTaskCount.Text = "";
+            this.lblDoneCount.Text = "";
         }
     }
 }

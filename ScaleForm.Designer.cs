@@ -45,6 +45,10 @@
             btnClear = new Button();
             btnDeleteSelect = new Button();
             btnDeleteDone = new Button();
+            lblTimeTotal = new Label();
+            lblTaskCount = new Label();
+            lblDoneCount = new Label();
+            lblLog = new Label();
             grpBoxPercent.SuspendLayout();
             gBoxMethod.SuspendLayout();
             SuspendLayout();
@@ -141,13 +145,14 @@
             // lbxFile
             // 
             lbxFile.AllowDrop = true;
-            lbxFile.Location = new Point(244, 34);
+            lbxFile.FullRowSelect = true;
+            lbxFile.Location = new Point(244, 19);
             lbxFile.Name = "lbxFile";
             lbxFile.OwnerDraw = true;
             lbxFile.ProgressColor = Color.Red;
             lbxFile.ProgressColumIndex = -1;
             lbxFile.ProgressTextColor = Color.Black;
-            lbxFile.Size = new Size(1300, 832);
+            lbxFile.Size = new Size(1300, 847);
             lbxFile.TabIndex = 29;
             lbxFile.UseCompatibleStateImageBehavior = false;
             lbxFile.View = View.Details;
@@ -190,7 +195,7 @@
             // 
             // btnStop
             // 
-            btnStop.Location = new Point(9, 519);
+            btnStop.Location = new Point(9, 515);
             btnStop.Name = "btnStop";
             btnStop.Size = new Size(214, 34);
             btnStop.TabIndex = 31;
@@ -200,7 +205,7 @@
             // 
             // btnClear
             // 
-            btnClear.Location = new Point(6, 588);
+            btnClear.Location = new Point(6, 580);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(217, 34);
             btnClear.TabIndex = 32;
@@ -210,7 +215,7 @@
             // 
             // btnDeleteSelect
             // 
-            btnDeleteSelect.Location = new Point(6, 657);
+            btnDeleteSelect.Location = new Point(6, 645);
             btnDeleteSelect.Name = "btnDeleteSelect";
             btnDeleteSelect.Size = new Size(217, 34);
             btnDeleteSelect.TabIndex = 33;
@@ -220,7 +225,7 @@
             // 
             // btnDeleteDone
             // 
-            btnDeleteDone.Location = new Point(6, 726);
+            btnDeleteDone.Location = new Point(9, 710);
             btnDeleteDone.Name = "btnDeleteDone";
             btnDeleteDone.Size = new Size(217, 34);
             btnDeleteDone.TabIndex = 34;
@@ -228,12 +233,55 @@
             btnDeleteDone.UseVisualStyleBackColor = true;
             btnDeleteDone.Click += btnDeleteDone_Click;
             // 
+            // lblTimeTotal
+            // 
+            lblTimeTotal.AutoSize = true;
+            lblTimeTotal.ForeColor = Color.Red;
+            lblTimeTotal.Location = new Point(3, 834);
+            lblTimeTotal.Name = "lblTimeTotal";
+            lblTimeTotal.Size = new Size(103, 24);
+            lblTimeTotal.TabIndex = 36;
+            lblTimeTotal.Text = "总用时 3 秒";
+            // 
+            // lblTaskCount
+            // 
+            lblTaskCount.AutoSize = true;
+            lblTaskCount.ForeColor = Color.Red;
+            lblTaskCount.Location = new Point(6, 759);
+            lblTaskCount.Name = "lblTaskCount";
+            lblTaskCount.Size = new Size(91, 24);
+            lblTaskCount.TabIndex = 37;
+            lblTaskCount.Text = "总任务 10";
+            // 
+            // lblDoneCount
+            // 
+            lblDoneCount.AutoSize = true;
+            lblDoneCount.ForeColor = Color.Red;
+            lblDoneCount.Location = new Point(6, 797);
+            lblDoneCount.Name = "lblDoneCount";
+            lblDoneCount.Size = new Size(91, 24);
+            lblDoneCount.TabIndex = 38;
+            lblDoneCount.Text = "已完成 10";
+            // 
+            // lblLog
+            // 
+            lblLog.BackColor = SystemColors.ActiveCaptionText;
+            lblLog.ForeColor = SystemColors.ButtonHighlight;
+            lblLog.Location = new Point(7, 873);
+            lblLog.Name = "lblLog";
+            lblLog.Size = new Size(1537, 24);
+            lblLog.TabIndex = 39;
+            // 
             // ScaleForm
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1586, 898);
+            ClientSize = new Size(1586, 917);
+            Controls.Add(lblLog);
+            Controls.Add(lblDoneCount);
+            Controls.Add(lblTaskCount);
+            Controls.Add(lblTimeTotal);
             Controls.Add(btnDeleteDone);
             Controls.Add(btnDeleteSelect);
             Controls.Add(btnClear);
@@ -258,6 +306,7 @@
             gBoxMethod.ResumeLayout(false);
             gBoxMethod.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -278,5 +327,9 @@
         private Button btnClear;
         private Button btnDeleteSelect;
         private Button btnDeleteDone;
+        private Label lblTimeTotal;
+        private Label lblTaskCount;
+        private Label lblDoneCount;
+        private Label lblLog;
     }
 }
