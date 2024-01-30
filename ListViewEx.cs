@@ -88,7 +88,7 @@ namespace RemoveWaterMar
                 //判断当前subitem文本是否可以转为浮点数
                 {
                     float per = float.Parse(e.Item.SubItems[e.ColumnIndex].Text);
-                    if (per >= 1.0f) { per = per / 100.0f; }
+                    per = per / 100.0f; 
                     Rectangle rect = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height);
                     DrawProgress(rect, per, e.Graphics);
                 }

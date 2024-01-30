@@ -571,6 +571,17 @@ namespace RemoveWaterMar
 
         private void btnSetScale_Click(object sender, EventArgs e)
         {
+            /*
+            double rx = 11.34;
+            string percent = string.Format("{0:F1}", rx);
+            MessageBox.Show("新的宽度不能为空" + percent);
+            bool Debug = true;
+            if (Debug == true)
+            {
+                return;
+            }
+            */
+
             if (filePath == null)
             {
                 ScaleForm scaleForm = new ScaleForm();
@@ -588,11 +599,7 @@ namespace RemoveWaterMar
                 return;
             }
 
-            /*bool Debug = true;
-            if(Debug == true)
-            {
-                return;
-            }*/
+
 
             string path = Path.GetDirectoryName(filePath);
             FileInfo f = new FileInfo(filePath);

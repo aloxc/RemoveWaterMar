@@ -407,10 +407,11 @@ namespace RemoveWaterMar
                     int cur = int.Parse(times[0]) * 60 * 60 + int.Parse(times[1]) * 60 + int.Parse(times[2]);
                     TimeSpan timeSpan = TimeSpan.Parse(lbxFile.Items[index].SubItems[1].Text);
                     int duration = (int)timeSpan.TotalSeconds;
-                    double rx = Math.Round((Convert.ToDouble(cur) / Convert.ToDouble(duration)), 2) * 100;
-                    int percent = Convert.ToInt32(rx);
+                    double rx = (Convert.ToDouble(cur) / Convert.ToDouble(duration)) * 100;
 
-                    lbxFile.Items[index].SubItems[percentColumIndex].Text = Convert.ToString(percent);
+                    string percent = string.Format("{0:F1}", rx) ;
+                    Log.Debug(percent);
+                    lbxFile.Items[index].SubItems[percentColumIndex].Text = percent;
 
                     TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
                     TimeSpan abs = end.Subtract(spendTime).Duration();
