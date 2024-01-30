@@ -1,36 +1,15 @@
 ﻿using FFmpeg.NET;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RemoveWaterMar
 {
     public partial class ScaleForm : Form
     {
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
-        private readonly static string logFileStart = "log";
         Engine ffmpeg = new Engine(@"ffmpeg.exe");
         CancellationToken token = new CancellationToken();
         private Process process;
-        private bool processing = false;
         //调整分辨率后视频保存文件的后缀
         private readonly static string scaleName = "__Scale";
         private int index = 0;
@@ -97,7 +76,19 @@ namespace RemoveWaterMar
         {
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "视频文件(*.mp4,*.mkv)|*.mp4;*.mkv";
+            string filter = "视频文件(";
+            foreach(string allow in Util.allowFiles)
+            {
+                filter += "*." + allow + ",";
+            }
+            filter = filter.Remove(filter.LastIndexOf(","));
+            filter += ")|";
+            foreach (string allow in Util.allowFiles)
+            {
+                filter += "*." + allow + ";";
+            }
+            filter = filter.Remove(filter.LastIndexOf(";"));
+            openFileDialog.Filter = filter;
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
             openFileDialog.FilterIndex = 1;
@@ -135,11 +126,22 @@ namespace RemoveWaterMar
                 MessageBox.Show("至少拖放一个视频文件");
                 return;
             }
+            string filter = "";
+            string tips = "只能视频文件( ";
+            foreach (string allow in Util.allowFiles)
+            {
+                filter += "*." + allow + ",";
+                tips += "." + allow + " ";
+            }
+            tips += ")";
+          
             foreach (string f in files)
             {
-                if (!f.ToLower().EndsWith(".mp4") && !f.ToLower().EndsWith(".mkv"))
+                string[] infos = f.Split(".");
+                string extension = infos[infos.Length - 1];
+                if (!filter.Contains(extension + ","))
                 {
-                    MessageBox.Show("只能视频文件(.mp4和.mkv)");
+                    MessageBox.Show(tips);
                     return;
                 }
             }
@@ -223,10 +225,31 @@ namespace RemoveWaterMar
                 MessageBox.Show("请选择缩放比例");
                 return;
             }
-            taskTimer = new System.Threading.Timer(new TimerCallback(runTask));
+            taskTimer = new System.Threading.Timer(new TimerCallback(checkAndRunTask));
+            int count = lbxFile.Items.Count;
+            if (count == 0)
+            {
+                Log.Debug("click,列表中没有任务");
+                return;
+            }
+            bool doneAll = true;
+
+            for (int i = 0; i < count; i++)
+            {
+                string percentColum = lbxFile.Items[i].SubItems[percentColumIndex].Text;
+                if (!percentColum.Contains("100"))
+                {
+                    doneAll = false;
+                }
+            }
+            if (doneAll)
+            {
+                return;
+            }
+            spendTime = new TimeSpan(DateTime.Now.Ticks);
             taskTimer.Change(0,1000);
         }
-        private void runTask(object v)
+        private void checkAndRunTask(object v)
         {
             Log.Debug("runTask,开始");
             int count = lbxFile.Items.Count;
@@ -253,7 +276,6 @@ namespace RemoveWaterMar
             for (int i = 0; i < count; i++)
             {
                 index = i;
-                spendTime = new TimeSpan(DateTime.Now.Ticks);
                 string filePath = lbxFile.Items[i].SubItems[0].Text;
                 string percentColum = lbxFile.Items[i].SubItems[percentColumIndex].Text;
                 if (!percentColum.Contains("100"))
@@ -294,7 +316,6 @@ namespace RemoveWaterMar
                     //开始异步读取输出
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
-                    processing = true;
                     this.btnDoit.Enabled = false;
                     this.btnStop.Enabled = true;
                     this.btnOpen.Enabled = false;
@@ -305,72 +326,6 @@ namespace RemoveWaterMar
             {
                 taskTimer.Change(Timeout.Infinite, 1000);
             }
-        }
-        private void btnDoit_Click1(object sender, EventArgs e)
-        {
-            //Task.Run(()=>doTask());
-            Task.Run(() =>
-            {
-                spendTimeTotal = new TimeSpan(DateTime.Now.Ticks);
-
-                if (!checkScaleButton())
-                {
-                    MessageBox.Show("请选择缩放比例");
-                    return;
-                }
-                int count = lbxFile.Items.Count;
-                if (count == 0)
-                {
-                    MessageBox.Show("请添加需要处理的文件");
-                    return;
-                }
-                for (int i = 0; i < count; i++)
-                {
-                    index = i;
-                    spendTime = new TimeSpan(DateTime.Now.Ticks);
-                    string filePath = lbxFile.Items[i].SubItems[0].Text;
-                    string percentColum = lbxFile.Items[i].SubItems[percentColumIndex].Text;
-                    FileInfo f = new FileInfo(filePath);
-                    string path = Path.GetDirectoryName(filePath);
-                    string tempName = f.Name.Remove(f.Name.LastIndexOf("."));
-                    process = new Process();
-                    process.StartInfo.FileName = "ffmpeg";
-                    process.StartInfo.WorkingDirectory = path;
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                    string frameSize = lbxFile.Items[i].SubItems[2].Text;
-                    outFile = path + "\\" + tempName + scaleName + ".mp4";
-                    var size = getNewSize(frameSize);
-                    this.lblLog.Visible = true;
-                    string param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " \"" + outFile + "\" -y";
-                    if (rbtnGpu.Checked)
-                    {
-                        param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " -c:v h264_nvenc -gpu 0 \"" + outFile +"\" -y";
-                    }
-                    Log.Debug(param);
-                    process.StartInfo.Arguments = param;
-                    process.StartInfo.CreateNoWindow = true;//显示命令行窗口
-                                                            //不使用操作系统使用的shell启动进程
-                    process.StartInfo.UseShellExecute = false;
-                    //将输出信息重定向
-                    process.StartInfo.RedirectStandardInput = true;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.RedirectStandardError = true;
-                    process.EnableRaisingEvents = true;
-
-                    process.Exited += new EventHandler(scale_Exited);
-                    process.OutputDataReceived += new DataReceivedEventHandler(scale_OutputDataReceived);
-                    process.ErrorDataReceived += new DataReceivedEventHandler(scale_ErrorDataReceived);
-
-                    process.Start();
-                    //开始异步读取输出
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-                    processing = true;
-                    this.btnDoit.Enabled = false;
-                    this.btnStop.Enabled = true;
-                    this.btnOpen.Enabled = false;
-                }
-            });
         }
 
         void scale_OutputDataReceived(Object sender, DataReceivedEventArgs e)
@@ -428,21 +383,17 @@ namespace RemoveWaterMar
 
         void scale_Exited(Object sender, EventArgs e)
         {
-            if (processing)
-            {
-                TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
-                TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
+            TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
+            TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
 
-                processing = false;
-                this.btnDoit.Enabled = true;
-                this.btnStop.Enabled = false;
-                this.btnOpen.Enabled = true;
+            this.btnDoit.Enabled = true;
+            this.btnStop.Enabled = false;
+            this.btnOpen.Enabled = true;
 
-                doneCount++;
-                this.lblDoneCount.Text = "已完成 " + doneCount;
-                lblLog.Text = "";
-                this.lblLog.Visible = false;
-            }
+            doneCount++;
+            this.lblDoneCount.Text = "已完成 " + doneCount;
+            lblLog.Text = "";
+            this.lblLog.Visible = false;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -454,17 +405,6 @@ namespace RemoveWaterMar
             this.btnOpen.Enabled = true;
             lblLog.Text = "";
             this.lblLog.Visible = false;
-            /* if (processing)
-             {
-                 process.Kill();
-                 //processing = false;
-                 this.btnDoit.Enabled = true;
-                 this.btnStop.Enabled = false;
-                 this.btnOpen.Enabled = true;
-                 lblLog.Text = "";
-
-                 this.lblLog.Visible = false;
-             }*/
         }
 
         private void btnDeleteDone_Click(object sender, EventArgs e)

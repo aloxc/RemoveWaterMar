@@ -2,13 +2,8 @@ using FFmpeg.NET;
 using RemoveWaterMar.Properties;
 using Serilog;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace RemoveWaterMar
 {
@@ -62,6 +57,8 @@ namespace RemoveWaterMar
         private Graphics graphics;
         private Icon blueIcon = Resources.icon;
         private Icon redIcon = Resources.icon2;
+
+
         public WaterMark()
         {
             InitializeComponent();
@@ -85,7 +82,19 @@ namespace RemoveWaterMar
         private void btnOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "视频文件(*.mp4,*.mkv)|*.mp4;*.mkv";
+            string filter = "视频文件(";
+            foreach (string allow in Util.allowFiles)
+            {
+                filter += "*." + allow + ",";
+            }
+            filter = filter.Remove(filter.LastIndexOf(","));
+            filter += ")|";
+            foreach (string allow in Util.allowFiles)
+            {
+                filter += "*." + allow + ";";
+            }
+            filter = filter.Remove(filter.LastIndexOf(";"));
+            openFileDialog.Filter = filter;
             openFileDialog.RestoreDirectory = true;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -533,11 +542,22 @@ namespace RemoveWaterMar
                 return;
             }
             string f = files[0];
-            if (!f.ToLower().EndsWith(".mp4") && !f.ToLower().EndsWith(".mkv"))
+            string filter = "";
+            string tips = "只能视频文件( ";
+            foreach (string allow in Util.allowFiles)
             {
-                MessageBox.Show("只能视频文件(.mp4和.mkv)");
+                filter += "*." + allow + ",";
+                tips += "." + allow + " ";
+            }
+            tips += ")";
+            string[] infos = f.Split(".");
+            string extension = infos[infos.Length - 1];
+            if (!filter.Contains(extension + ","))
+            {
+                MessageBox.Show(tips);
                 return;
             }
+           
             filePath = f;
             openVideoHander();
 
