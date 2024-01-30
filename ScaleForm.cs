@@ -1,7 +1,9 @@
 ﻿using FFmpeg.NET;
 using Serilog;
+using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using static System.Windows.Forms.ListView;
 
 namespace RemoveWaterMar
 {
@@ -20,6 +22,8 @@ namespace RemoveWaterMar
         private string outFile = null;
         private System.Threading.Timer taskTimer = null;
         private readonly int percentColumIndex = 3;
+        private List<VideoInfo> videoList = new List<VideoInfo>();
+        private Barrier barrier;
 
         public ScaleForm()
         {
@@ -28,7 +32,7 @@ namespace RemoveWaterMar
             this.DoubleBuffered = true;
             string rootPath = Directory.GetCurrentDirectory();
             DirectoryInfo root = new DirectoryInfo(rootPath);
-            System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;
+            Control.CheckForIllegalCrossThreadCalls = false;
             Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("./log.txt", rollingInterval: RollingInterval.Month).CreateLogger();
         }
 
@@ -74,7 +78,7 @@ namespace RemoveWaterMar
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-
+            videoList.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             string filter = "视频文件(";
             foreach(string allow in Util.allowFiles)
@@ -96,20 +100,68 @@ namespace RemoveWaterMar
             {
 
                 string[] files = openFileDialog.FileNames;
-                for (int i = 0; i < files.Length; i++)
-                {
-                    string f = files[i];
-                    var inputFile = new InputFile(f);
-                    GetVideoInfo(i, inputFile);
-                }
+                setListViewData(files);
             }
             else
             {
                 return;
             }
-
         }
-
+        private void setListViewData(string[] files)
+        {
+            this.lblTaskCount.Text = "正在解析 " + files.Length + "个视频";
+            barrier = new Barrier(files.Length, a =>
+            {
+                Log.Information("回调一次,新添加任务数量" + videoList.Count);
+                int no = 0;
+                List<ListViewItem> listItems = new List<ListViewItem>();
+                
+                foreach (VideoInfo v in videoList)
+                {
+                    //Log.Information("视频：" + v.path + "  " + v.isErrorVideo());
+                    if (v.isErrorVideo())
+                    {
+                        MessageBox.Show(v.path, "无法解析的视频", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        continue;
+                    }
+                    ListViewItem item = new ListViewItem(v.toListItem());
+                    listItems.Add(item);
+                    item.UseItemStyleForSubItems = false;
+                    if (no % 2 == 0)
+                    {
+                        item.SubItems[0].BackColor = Color.YellowGreen;
+                        item.SubItems[1].BackColor = Color.YellowGreen;
+                        item.SubItems[2].BackColor = Color.YellowGreen;
+                        item.SubItems[3].BackColor = Color.YellowGreen;
+                        item.SubItems[4].BackColor = Color.YellowGreen;
+                    }
+                    else
+                    {
+                        item.SubItems[0].BackColor = Color.MistyRose;
+                        item.SubItems[1].BackColor = Color.MistyRose;
+                        item.SubItems[2].BackColor = Color.MistyRose;
+                        item.SubItems[3].BackColor = Color.MistyRose;
+                        item.SubItems[4].BackColor = Color.MistyRose;
+                    }
+                    taskCount++;
+                    this.lblTaskCount.Text = "总任务 " + taskCount;
+                    this.lblDoneCount.Text = "已完成 " + doneCount;
+                    no++;
+                }
+                this.lbxFile.Items.AddRange(listItems.ToArray());
+            });
+            for (int i = 0; i < files.Length; i++)
+            {
+                string f = files[i];
+                int taskNo = i;
+                ThreadPool.QueueUserWorkItem(new WaitCallback(state =>
+                {
+                    string f = files[taskNo];
+                    var inputFile = new InputFile(f);
+                    GetVideoInfo(inputFile);
+                }));
+            }
+        }
         private void Scale_DragEnter(object sender, DragEventArgs e)
         {
 
@@ -120,6 +172,7 @@ namespace RemoveWaterMar
 
         private void Scale_DragDrop(object sender, DragEventArgs e)
         {
+            videoList.Clear();
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             if (files.Length == 0)
             {
@@ -145,45 +198,27 @@ namespace RemoveWaterMar
                     return;
                 }
             }
-            for (int i = 0; i < files.Length; i++)
-            {
-                string f = files[i];
-                var inputFile = new InputFile(f);
-                GetVideoInfo(i,inputFile);
-            }
+            setListViewData(files);
         }
-        public async void GetVideoInfo(int i,InputFile inputFile)
+
+        public async void GetVideoInfo(InputFile inputFile)
         {
             MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
+            if(data == null)
+            {
+                Log.Information("视频有问题" + inputFile.Name);
+                videoList.Add(new VideoInfo(inputFile.Name,null,0,null,-1));
+                barrier.SignalAndWait();
+                return;
+            }
             int seconds = (int)data.Duration.TotalSeconds;
             TimeSpan time = TimeSpan.FromSeconds(seconds);
             string timeString = time.ToString(@"hh\:mm\:ss");
 
             string frameSize = data.VideoData.FrameSize;
-            Log.Debug(inputFile.Name + ";" + frameSize);
-            ListViewItem item = lbxFile.Items.Add(new ListViewItem(new string[] { inputFile.Name, timeString, frameSize, "0","" }));
-            item.UseItemStyleForSubItems = false;
-            
-            if (i % 2 == 0)
-            {
-                item.SubItems[0].BackColor = Color.Gainsboro;
-                item.SubItems[1].BackColor = Color.Gainsboro;
-                item.SubItems[2].BackColor = Color.Gainsboro;
-                item.SubItems[3].BackColor = Color.Gainsboro;
-                item.SubItems[4].BackColor = Color.Gainsboro;
-            }
-            else
-            {
-                item.SubItems[0].BackColor = Color.MistyRose;
-                item.SubItems[1].BackColor = Color.MistyRose;
-                item.SubItems[2].BackColor = Color.MistyRose;
-                item.SubItems[3].BackColor = Color.MistyRose;
-                item.SubItems[4].BackColor = Color.MistyRose;
-            }
-            taskCount++;
-            this.lblTaskCount.Text = "总任务 " + taskCount;
-            this.lblDoneCount.Text = "已完成 " + doneCount;
-            
+            videoList.Add(new VideoInfo(inputFile.Name, frameSize, 0, timeString, 0));
+            Log.Debug("已解析：" + inputFile.Name + ";" + frameSize);
+            barrier.SignalAndWait();
         }
 
         private void ScaleForm_Load(object sender, EventArgs e)

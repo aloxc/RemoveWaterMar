@@ -297,6 +297,7 @@
             MinimizeBox = false;
             Name = "ScaleForm";
             ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "调整分辨率";
             Load += ScaleForm_Load;
             DragDrop += Scale_DragDrop;

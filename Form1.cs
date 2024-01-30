@@ -130,6 +130,11 @@ namespace RemoveWaterMar
         {
             //MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token).GetAwaiter().GetResult();
             MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
+            if (data == null)
+            {
+                MessageBox.Show(inputFile.FileInfo.Name, "无法解析的视频", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             duration = (int)data.Duration.TotalSeconds;
             durationMilliseconds = (int)data.Duration.TotalMilliseconds;
             string frameSize = data.VideoData.FrameSize;
