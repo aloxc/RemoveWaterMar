@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScaleForm));
             btnOpen = new Button();
             grpBoxPercent = new GroupBox();
+            rbt11 = new RadioButton();
             rbt14 = new RadioButton();
             rbt13 = new RadioButton();
             rbt34 = new RadioButton();
@@ -49,7 +50,6 @@
             lblTaskCount = new Label();
             lblDoneCount = new Label();
             lblLog = new Label();
-            rbt11 = new RadioButton();
             grpBoxPercent.SuspendLayout();
             gBoxMethod.SuspendLayout();
             SuspendLayout();
@@ -78,6 +78,18 @@
             grpBoxPercent.TabIndex = 26;
             grpBoxPercent.TabStop = false;
             grpBoxPercent.Text = "缩放比例";
+            // 
+            // rbt11
+            // 
+            rbt11.AutoSize = true;
+            rbt11.ForeColor = Color.Red;
+            rbt11.Location = new Point(6, 39);
+            rbt11.Name = "rbt11";
+            rbt11.Size = new Size(71, 28);
+            rbt11.TabIndex = 31;
+            rbt11.TabStop = true;
+            rbt11.Text = "压缩";
+            rbt11.UseVisualStyleBackColor = true;
             // 
             // rbt14
             // 
@@ -269,21 +281,10 @@
             // 
             lblLog.BackColor = SystemColors.ActiveCaptionText;
             lblLog.ForeColor = SystemColors.ButtonHighlight;
-            lblLog.Location = new Point(7, 873);
+            lblLog.Location = new Point(244, 873);
             lblLog.Name = "lblLog";
-            lblLog.Size = new Size(1537, 24);
+            lblLog.Size = new Size(1300, 24);
             lblLog.TabIndex = 39;
-            // 
-            // rbt11
-            // 
-            rbt11.AutoSize = true;
-            rbt11.Location = new Point(6, 39);
-            rbt11.Name = "rbt11";
-            rbt11.Size = new Size(65, 28);
-            rbt11.TabIndex = 31;
-            rbt11.TabStop = true;
-            rbt11.Text = "1/1";
-            rbt11.UseVisualStyleBackColor = true;
             // 
             // ScaleForm
             // 

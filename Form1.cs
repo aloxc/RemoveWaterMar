@@ -587,11 +587,6 @@ namespace RemoveWaterMar
                 MessageBox.Show("新的高度不能为空");
                 return;
             }
-            if (Convert.ToInt32(this.tbxWidth.Text) == this.picWidth && Convert.ToInt32(this.tbxHeight.Text) == this.picHeight)
-            {
-                MessageBox.Show("新的宽度和高度不能和原视频一样");
-                return;
-            }
 
             /*bool Debug = true;
             if(Debug == true)

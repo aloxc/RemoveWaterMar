@@ -253,7 +253,8 @@ namespace RemoveWaterMar
 
         private bool checkScaleButton()
         {
-            return (rbt12.Checked || rbt13.Checked || rbt14.Checked || rbt23.Checked || rbt34.Checked);
+            return (rbt11.Checked || rbt12.Checked || rbt13.Checked 
+                || rbt14.Checked || rbt23.Checked || rbt34.Checked);
         }
         private void btnDoit_Click(object sender, EventArgs e)
         {

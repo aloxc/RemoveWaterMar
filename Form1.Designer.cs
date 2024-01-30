@@ -307,12 +307,13 @@
             // rbt11
             // 
             rbt11.AutoSize = true;
+            rbt11.ForeColor = Color.Red;
             rbt11.Location = new Point(6, 17);
             rbt11.Name = "rbt11";
-            rbt11.Size = new Size(65, 28);
+            rbt11.Size = new Size(71, 28);
             rbt11.TabIndex = 26;
             rbt11.TabStop = true;
-            rbt11.Text = "1/1";
+            rbt11.Text = "压缩";
             rbt11.UseVisualStyleBackColor = true;
             rbt11.Click += rbt11_Click;
             // 
