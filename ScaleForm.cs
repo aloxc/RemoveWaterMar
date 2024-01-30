@@ -287,9 +287,17 @@ namespace RemoveWaterMar
         {
             //这里是正常的输出
             //执行过程中停止了
-            Log.Information("out " + e.Data);
-            FileInfo f = new FileInfo(outFile);
-            f.Delete();
+            //Log.Information("out " + e.Data);
+            int count = lbxFile.Items.Count;
+            for (int i = 0; i < count; i++)
+            {
+                spendTime = new TimeSpan(DateTime.Now.Ticks);
+                string filePath = lbxFile.Items[i].SubItems[0].Text;
+                if (filePath.Equals(outFile.Replace(scaleName, "")) && !lbxFile.Items[i].SubItems[3].Text.Contains("100")){
+                    FileInfo f = new FileInfo(outFile);
+                    f.Delete();
+                }
+            }
         }
 
 
