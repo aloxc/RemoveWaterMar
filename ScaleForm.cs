@@ -25,7 +25,7 @@ namespace RemoveWaterMar
         private readonly int percentColumIndex = 3;
         private List<VideoInfo> videoList = new List<VideoInfo>();
         private Barrier barrier;
-        Random random = new Random();
+        private Random random = new Random();
         private readonly static string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private readonly static string imageFileStart = "Snipaste";
 

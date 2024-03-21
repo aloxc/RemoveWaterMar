@@ -1,6 +1,7 @@
 ﻿using FFmpeg.NET;
 using Serilog;
 using System.Reflection;
+using System.Text;
 
 namespace RemoveWaterMar
 {
@@ -8,7 +9,7 @@ namespace RemoveWaterMar
     {
         public readonly int pBarPlayerMultiple = 100;
         private int vWidth = 0;
-        private int vHight = 0;
+        private int vHeight = 0;
         private readonly string filePath = null;
         private string fileName = null;
         private ToolTip toolTip = null;
@@ -17,8 +18,10 @@ namespace RemoveWaterMar
         //视频时长，单位秒,这时使用ffmpeg读取出来的
         private int duration;
         //视频时长，单位毫秒,这时使用ffmpeg读取出来的
-        private double durationMilliseconds;
         private System.Diagnostics.Stopwatch watchTime = null;
+        private Random random = new Random();
+        private readonly static string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        private readonly static string imageFileStart = "Snipaste";
 
         public Player(string filePath)
         {
@@ -102,7 +105,7 @@ namespace RemoveWaterMar
                 this.Close();
             }
             int volume = play.Audio.Volume;
-            this.Text = "分辨率：" + Width + "x" + Height + "     音量：" + volume + "%"
+            this.Text = "分辨率：" + vWidth + "x" + vHeight + "     音量：" + volume + "%"
                 + "     帧率：" + fps + "     码率：" + bitRate + "     时长(s)：" + duration +
                 "     " + fileName;
             pos = (int)(play.Position * 100 * pBarPlayerMultiple);
@@ -151,20 +154,39 @@ namespace RemoveWaterMar
         public async void GetVideoInfo(Engine ffmpeg, InputFile inputFile, CancellationToken token)
         {
             MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
-            string frameSize = data.VideoData.FrameSize;
             fps = data.VideoData.Fps;
             bitRate = data.VideoData.BitRateKbs;
             TimeSpan durat = data.Duration;//00:01:02.3200000
-            durationMilliseconds = data.Duration.TotalMilliseconds;
+            int durationMilliseconds = (int)data.Duration.TotalMilliseconds;
             duration = (int)data.Duration.TotalSeconds;
 
-            string[] frameInfo = frameSize.Split("x");
-            vWidth = Int32.Parse(frameInfo[0]);
-            vHight = Int32.Parse(frameInfo[1]);
+            TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            StringBuilder sb = new StringBuilder();
+            Random random = new Random();
+
+            for (int i = 0; i < 10; i++)
+            {
+                int index = random.Next(chars.Length);
+                sb.Append(chars[index]);
+            }
+
+            string currentImageFile = "./" + imageFileStart + Convert.ToInt64(ts.TotalMilliseconds).ToString() + "_" + sb.ToString() + ".jpg";
+
+            var outputFile = new OutputFile(currentImageFile);
+            ConversionOptions conversionOptions = new ConversionOptions()
+            {
+                Seek = TimeSpan.FromMilliseconds(random.Next(1, durationMilliseconds - 1))
+            };
+
+            await ffmpeg.GetThumbnailAsync(inputFile, outputFile, conversionOptions, token);
+            Image image = Image.FromFile(currentImageFile);
+
+            vWidth = image.Width;
+            vHeight = image.Height;
             play.Width = vWidth;
-            play.Height = vHight;
+            play.Height = vHeight;
             this.Width = vWidth;
-            this.Height = vHight;
+            this.Height = vHeight;
             this.pBarPlayer.Width = vWidth;
         }
 
@@ -296,6 +318,10 @@ namespace RemoveWaterMar
         {
             Help help = new Help();
             help.ShowDialog();
+        }
+
+        private void play_DoubleClick(object sender, EventArgs e)
+        {
         }
     }
 }
