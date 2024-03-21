@@ -308,6 +308,7 @@ namespace RemoveWaterMar
             {
                 param = "-i \"" + filePath + "\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" -c:v h264_nvenc -gpu 0 \"" + path + "\\" + tempName + guding + ".mp4\" -y";
             }
+            Log.Debug(param);
             process.StartInfo.Arguments = param;
             process.StartInfo.CreateNoWindow = true;//显示命令行窗口
             //不使用操作系统使用的shell启动进程
@@ -749,6 +750,11 @@ namespace RemoveWaterMar
             this.tbxHeight.Text = Convert.ToString(this.picHeight * min / max);
         }
 
+        private void btnMergeM3u8_Click(object sender, EventArgs e)
+        {
+            M3u8 m3 = new M3u8();
+            m3.ShowDialog();
 
+        }
     }
 }
