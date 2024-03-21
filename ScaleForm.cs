@@ -2,6 +2,7 @@
 using Serilog;
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using static System.Windows.Forms.ListView;
 
@@ -24,6 +25,9 @@ namespace RemoveWaterMar
         private readonly int percentColumIndex = 3;
         private List<VideoInfo> videoList = new List<VideoInfo>();
         private Barrier barrier;
+        Random random = new Random();
+        private readonly static string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        private readonly static string imageFileStart = "Snipaste";
 
         public ScaleForm()
         {
@@ -219,7 +223,29 @@ namespace RemoveWaterMar
             TimeSpan time = TimeSpan.FromSeconds(seconds);
             string timeString = time.ToString(@"hh\:mm\:ss");
 
-            string frameSize = data.VideoData.FrameSize;
+            TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            StringBuilder sb = new StringBuilder();
+            Random random = new Random();
+
+            for (int i = 0; i < 10; i++)
+            {
+                int index = random.Next(chars.Length);
+                sb.Append(chars[index]);
+            }
+
+            string currentImageFile = "./" + imageFileStart + Convert.ToInt64(ts.TotalMilliseconds).ToString() + "_" + sb.ToString() + ".jpg";
+
+            var outputFile = new OutputFile(currentImageFile);
+            int durationMilliseconds = (int)data.Duration.TotalMilliseconds;
+            ConversionOptions conversionOptions = new ConversionOptions()
+            {
+                Seek = TimeSpan.FromMilliseconds(random.Next(1, durationMilliseconds - 1))
+            };
+
+            await ffmpeg.GetThumbnailAsync(inputFile, outputFile, conversionOptions, token);
+            Image image = Image.FromFile(currentImageFile);
+            string frameSize = image.Width + "x" + image.Height;
+
             videoList.Add(new VideoInfo(inputFile.Name, frameSize, 0, timeString, 0));
             Log.Debug("已解析：" + inputFile.Name + ";" + frameSize);
             barrier.SignalAndWait();
@@ -230,10 +256,10 @@ namespace RemoveWaterMar
             lbxFile.HeaderStyle = ColumnHeaderStyle.Clickable;
             lbxFile.View = View.Details;
 
-            this.lbxFile.Columns.Add("文件", 780, HorizontalAlignment.Left);
+            this.lbxFile.Columns.Add("文件", 380, HorizontalAlignment.Left);
             this.lbxFile.Columns.Add("时长", 100, HorizontalAlignment.Left);
             this.lbxFile.Columns.Add("分辨率", 150, HorizontalAlignment.Left);
-            this.lbxFile.Columns.Add("进度", 200, HorizontalAlignment.Left);
+            this.lbxFile.Columns.Add("进度", 100, HorizontalAlignment.Left);
             this.lbxFile.Columns.Add("用时", 50, HorizontalAlignment.Left);
             this.btnStop.Enabled = false;
 

@@ -137,27 +137,27 @@ namespace RemoveWaterMar
             }
             duration = (int)data.Duration.TotalSeconds;
             durationMilliseconds = (int)data.Duration.TotalMilliseconds;
-            string frameSize = data.VideoData.FrameSize;
-            string[] frameInfo = frameSize.Split("x");
-            picWidth = Int32.Parse(frameInfo[0]);
-            picHeight = Int32.Parse(frameInfo[1]);
-            this.tbxHeight.Text = Convert.ToString(picHeight);
-            this.tbxWidth.Text = Convert.ToString(picWidth);
-            this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
+            Random random = new Random();
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             currentImageFile = "./" + imageFileStart + Convert.ToInt64(ts.TotalMilliseconds).ToString() + ".jpg";
             var outputFile = new OutputFile(currentImageFile);
-            Random random = new Random();
+
             ConversionOptions conversionOptions = new ConversionOptions()
             {
                 Seek = TimeSpan.FromMilliseconds(random.Next(1, durationMilliseconds - 1))
             };
             await ffmpeg.GetThumbnailAsync(inputFile, outputFile, conversionOptions, token);
             this.picBox.Load(currentImageFile);
+            picWidth = this.picBox.Image.Width;
+            picHeight = this.picBox.Image.Height;
+            this.tbxHeight.Text = Convert.ToString(picHeight);
+            this.tbxWidth.Text = Convert.ToString(picWidth);
+            this.Text = "淡化视频水印       " + this.fileName + " 总时长：" + duration + "秒,分辨率" + this.picWidth + " * " + this.picHeight;
+
+
             pic = new Bitmap(this.picBox.Image, this.picBox.Width, this.picBox.Height);
             picGraphics = Graphics.FromImage(this.picBox.Image);
             perMaskWidth = pic.Width / 100;
-
         }
         private Graphics picGraphics;
         private Bitmap pic = null;
@@ -486,6 +486,12 @@ namespace RemoveWaterMar
             ffplay.StartInfo.WorkingDirectory = "./";
             ffplay.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             string param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" ";
+
+            if (x ==0 && y ==0 && width == 0 && height == 0)
+            {
+                param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\"  ";
+
+            }
             ffplay.StartInfo.Arguments = param;
             ffplay.StartInfo.CreateNoWindow = true;
             ffplay.StartInfo.RedirectStandardOutput = true;
