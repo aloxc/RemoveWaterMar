@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScaleForm));
             btnOpen = new Button();
             grpBoxPercent = new GroupBox();
@@ -50,15 +51,18 @@
             lblTaskCount = new Label();
             lblDoneCount = new Label();
             lblLog = new Label();
+            cbx10bit = new CheckBox();
+            tip10bit = new ToolTip(components);
             grpBoxPercent.SuspendLayout();
             gBoxMethod.SuspendLayout();
             SuspendLayout();
             // 
             // btnOpen
             // 
-            btnOpen.Location = new Point(12, 19);
+            btnOpen.Location = new Point(8, 13);
+            btnOpen.Margin = new Padding(2);
             btnOpen.Name = "btnOpen";
-            btnOpen.Size = new Size(211, 34);
+            btnOpen.Size = new Size(134, 24);
             btnOpen.TabIndex = 0;
             btnOpen.Text = "打开";
             btnOpen.UseVisualStyleBackColor = true;
@@ -72,9 +76,11 @@
             grpBoxPercent.Controls.Add(rbt34);
             grpBoxPercent.Controls.Add(rbt12);
             grpBoxPercent.Controls.Add(rbt23);
-            grpBoxPercent.Location = new Point(12, 76);
+            grpBoxPercent.Location = new Point(8, 54);
+            grpBoxPercent.Margin = new Padding(2);
             grpBoxPercent.Name = "grpBoxPercent";
-            grpBoxPercent.Size = new Size(211, 146);
+            grpBoxPercent.Padding = new Padding(2);
+            grpBoxPercent.Size = new Size(134, 103);
             grpBoxPercent.TabIndex = 26;
             grpBoxPercent.TabStop = false;
             grpBoxPercent.Text = "缩放比例";
@@ -83,9 +89,10 @@
             // 
             rbt11.AutoSize = true;
             rbt11.ForeColor = Color.Red;
-            rbt11.Location = new Point(6, 39);
+            rbt11.Location = new Point(4, 28);
+            rbt11.Margin = new Padding(2);
             rbt11.Name = "rbt11";
-            rbt11.Size = new Size(71, 28);
+            rbt11.Size = new Size(50, 21);
             rbt11.TabIndex = 31;
             rbt11.TabStop = true;
             rbt11.Text = "压缩";
@@ -94,9 +101,10 @@
             // rbt14
             // 
             rbt14.AutoSize = true;
-            rbt14.Location = new Point(108, 39);
+            rbt14.Location = new Point(69, 28);
+            rbt14.Margin = new Padding(2);
             rbt14.Name = "rbt14";
-            rbt14.Size = new Size(65, 28);
+            rbt14.Size = new Size(45, 21);
             rbt14.TabIndex = 30;
             rbt14.TabStop = true;
             rbt14.Text = "1/4";
@@ -105,9 +113,10 @@
             // rbt13
             // 
             rbt13.AutoSize = true;
-            rbt13.Location = new Point(6, 109);
+            rbt13.Location = new Point(4, 77);
+            rbt13.Margin = new Padding(2);
             rbt13.Name = "rbt13";
-            rbt13.Size = new Size(65, 28);
+            rbt13.Size = new Size(45, 21);
             rbt13.TabIndex = 29;
             rbt13.TabStop = true;
             rbt13.Text = "1/3";
@@ -116,9 +125,10 @@
             // rbt34
             // 
             rbt34.AutoSize = true;
-            rbt34.Location = new Point(108, 109);
+            rbt34.Location = new Point(69, 77);
+            rbt34.Margin = new Padding(2);
             rbt34.Name = "rbt34";
-            rbt34.Size = new Size(65, 28);
+            rbt34.Size = new Size(45, 21);
             rbt34.TabIndex = 28;
             rbt34.TabStop = true;
             rbt34.Text = "3/4";
@@ -127,9 +137,10 @@
             // rbt12
             // 
             rbt12.AutoSize = true;
-            rbt12.Location = new Point(6, 75);
+            rbt12.Location = new Point(4, 53);
+            rbt12.Margin = new Padding(2);
             rbt12.Name = "rbt12";
-            rbt12.Size = new Size(65, 28);
+            rbt12.Size = new Size(45, 21);
             rbt12.TabIndex = 26;
             rbt12.TabStop = true;
             rbt12.Text = "1/2";
@@ -138,9 +149,10 @@
             // rbt23
             // 
             rbt23.AutoSize = true;
-            rbt23.Location = new Point(108, 75);
+            rbt23.Location = new Point(69, 53);
+            rbt23.Margin = new Padding(2);
             rbt23.Name = "rbt23";
-            rbt23.Size = new Size(65, 28);
+            rbt23.Size = new Size(45, 21);
             rbt23.TabIndex = 27;
             rbt23.TabStop = true;
             rbt23.Text = "2/3";
@@ -148,9 +160,10 @@
             // 
             // btnDoit
             // 
-            btnDoit.Location = new Point(12, 391);
+            btnDoit.Location = new Point(8, 321);
+            btnDoit.Margin = new Padding(2);
             btnDoit.Name = "btnDoit";
-            btnDoit.Size = new Size(211, 34);
+            btnDoit.Size = new Size(134, 24);
             btnDoit.TabIndex = 28;
             btnDoit.Text = "处理";
             btnDoit.UseVisualStyleBackColor = true;
@@ -160,13 +173,14 @@
             // 
             lbxFile.AllowDrop = true;
             lbxFile.FullRowSelect = true;
-            lbxFile.Location = new Point(244, 19);
+            lbxFile.Location = new Point(155, 13);
+            lbxFile.Margin = new Padding(2);
             lbxFile.Name = "lbxFile";
             lbxFile.OwnerDraw = true;
             lbxFile.ProgressColor = Color.Red;
             lbxFile.ProgressColumIndex = -1;
             lbxFile.ProgressTextColor = Color.Black;
-            lbxFile.Size = new Size(1300, 847);
+            lbxFile.Size = new Size(829, 601);
             lbxFile.TabIndex = 29;
             lbxFile.UseCompatibleStateImageBehavior = false;
             lbxFile.View = View.Details;
@@ -178,9 +192,11 @@
             // 
             gBoxMethod.Controls.Add(rbtnCpu);
             gBoxMethod.Controls.Add(rbtnGpu);
-            gBoxMethod.Location = new Point(12, 241);
+            gBoxMethod.Location = new Point(8, 171);
+            gBoxMethod.Margin = new Padding(2);
             gBoxMethod.Name = "gBoxMethod";
-            gBoxMethod.Size = new Size(211, 129);
+            gBoxMethod.Padding = new Padding(2);
+            gBoxMethod.Size = new Size(134, 91);
             gBoxMethod.TabIndex = 30;
             gBoxMethod.TabStop = false;
             gBoxMethod.Text = "处理方式";
@@ -188,9 +204,10 @@
             // rbtnCpu
             // 
             rbtnCpu.AutoSize = true;
-            rbtnCpu.Location = new Point(6, 89);
+            rbtnCpu.Location = new Point(4, 63);
+            rbtnCpu.Margin = new Padding(2);
             rbtnCpu.Name = "rbtnCpu";
-            rbtnCpu.Size = new Size(143, 28);
+            rbtnCpu.Size = new Size(98, 21);
             rbtnCpu.TabIndex = 6;
             rbtnCpu.Text = "使用CPU处理";
             rbtnCpu.UseVisualStyleBackColor = true;
@@ -199,9 +216,10 @@
             // 
             rbtnGpu.AutoSize = true;
             rbtnGpu.Checked = true;
-            rbtnGpu.Location = new Point(6, 44);
+            rbtnGpu.Location = new Point(4, 31);
+            rbtnGpu.Margin = new Padding(2);
             rbtnGpu.Name = "rbtnGpu";
-            rbtnGpu.Size = new Size(144, 28);
+            rbtnGpu.Size = new Size(99, 21);
             rbtnGpu.TabIndex = 7;
             rbtnGpu.TabStop = true;
             rbtnGpu.Text = "使用GPU处理";
@@ -209,9 +227,10 @@
             // 
             // btnStop
             // 
-            btnStop.Location = new Point(9, 456);
+            btnStop.Location = new Point(6, 367);
+            btnStop.Margin = new Padding(2);
             btnStop.Name = "btnStop";
-            btnStop.Size = new Size(214, 34);
+            btnStop.Size = new Size(136, 24);
             btnStop.TabIndex = 31;
             btnStop.Text = "停止";
             btnStop.UseVisualStyleBackColor = true;
@@ -219,9 +238,10 @@
             // 
             // btnClear
             // 
-            btnClear.Location = new Point(6, 521);
+            btnClear.Location = new Point(4, 413);
+            btnClear.Margin = new Padding(2);
             btnClear.Name = "btnClear";
-            btnClear.Size = new Size(217, 34);
+            btnClear.Size = new Size(138, 24);
             btnClear.TabIndex = 32;
             btnClear.Text = "清空列表";
             btnClear.UseVisualStyleBackColor = true;
@@ -229,9 +249,10 @@
             // 
             // btnDeleteSelect
             // 
-            btnDeleteSelect.Location = new Point(6, 586);
+            btnDeleteSelect.Location = new Point(4, 459);
+            btnDeleteSelect.Margin = new Padding(2);
             btnDeleteSelect.Name = "btnDeleteSelect";
-            btnDeleteSelect.Size = new Size(217, 34);
+            btnDeleteSelect.Size = new Size(138, 24);
             btnDeleteSelect.TabIndex = 33;
             btnDeleteSelect.Text = "删除选中";
             btnDeleteSelect.UseVisualStyleBackColor = true;
@@ -239,9 +260,10 @@
             // 
             // btnDeleteDone
             // 
-            btnDeleteDone.Location = new Point(9, 651);
+            btnDeleteDone.Location = new Point(6, 505);
+            btnDeleteDone.Margin = new Padding(2);
             btnDeleteDone.Name = "btnDeleteDone";
-            btnDeleteDone.Size = new Size(217, 34);
+            btnDeleteDone.Size = new Size(138, 24);
             btnDeleteDone.TabIndex = 34;
             btnDeleteDone.Text = "删除已完成";
             btnDeleteDone.UseVisualStyleBackColor = true;
@@ -251,9 +273,10 @@
             // 
             lblTimeTotal.AutoSize = true;
             lblTimeTotal.ForeColor = Color.Red;
-            lblTimeTotal.Location = new Point(3, 775);
+            lblTimeTotal.Location = new Point(2, 593);
+            lblTimeTotal.Margin = new Padding(2, 0, 2, 0);
             lblTimeTotal.Name = "lblTimeTotal";
-            lblTimeTotal.Size = new Size(103, 24);
+            lblTimeTotal.Size = new Size(71, 17);
             lblTimeTotal.TabIndex = 36;
             lblTimeTotal.Text = "总用时 3 秒";
             // 
@@ -261,9 +284,10 @@
             // 
             lblTaskCount.AutoSize = true;
             lblTaskCount.ForeColor = Color.Red;
-            lblTaskCount.Location = new Point(6, 700);
+            lblTaskCount.Location = new Point(4, 540);
+            lblTaskCount.Margin = new Padding(2, 0, 2, 0);
             lblTaskCount.Name = "lblTaskCount";
-            lblTaskCount.Size = new Size(91, 24);
+            lblTaskCount.Size = new Size(62, 17);
             lblTaskCount.TabIndex = 37;
             lblTaskCount.Text = "总任务 10";
             // 
@@ -271,9 +295,10 @@
             // 
             lblDoneCount.AutoSize = true;
             lblDoneCount.ForeColor = Color.Red;
-            lblDoneCount.Location = new Point(6, 738);
+            lblDoneCount.Location = new Point(4, 567);
+            lblDoneCount.Margin = new Padding(2, 0, 2, 0);
             lblDoneCount.Name = "lblDoneCount";
-            lblDoneCount.Size = new Size(91, 24);
+            lblDoneCount.Size = new Size(62, 17);
             lblDoneCount.TabIndex = 38;
             lblDoneCount.Text = "已完成 10";
             // 
@@ -281,17 +306,35 @@
             // 
             lblLog.BackColor = SystemColors.ActiveCaptionText;
             lblLog.ForeColor = SystemColors.ButtonHighlight;
-            lblLog.Location = new Point(244, 873);
+            lblLog.Location = new Point(155, 618);
+            lblLog.Margin = new Padding(2, 0, 2, 0);
             lblLog.Name = "lblLog";
-            lblLog.Size = new Size(1300, 24);
+            lblLog.Size = new Size(827, 17);
             lblLog.TabIndex = 39;
+            // 
+            // cbx10bit
+            // 
+            cbx10bit.AutoSize = true;
+            cbx10bit.Cursor = Cursors.Hand;
+            cbx10bit.ForeColor = Color.Red;
+            cbx10bit.Location = new Point(8, 280);
+            cbx10bit.Name = "cbx10bit";
+            cbx10bit.Size = new Size(75, 21);
+            cbx10bit.TabIndex = 40;
+            cbx10bit.Text = "压缩出错";
+            cbx10bit.UseVisualStyleBackColor = true;
+            // 
+            // tip10bit
+            // 
+            tip10bit.ShowAlways = true;
             // 
             // ScaleForm
             // 
             AllowDrop = true;
-            AutoScaleDimensions = new SizeF(11F, 24F);
+            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1586, 917);
+            ClientSize = new Size(1009, 650);
+            Controls.Add(cbx10bit);
             Controls.Add(lblLog);
             Controls.Add(lblDoneCount);
             Controls.Add(lblTaskCount);
@@ -307,6 +350,7 @@
             Controls.Add(btnOpen);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(2);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "ScaleForm";
@@ -347,5 +391,7 @@
         private Label lblDoneCount;
         private Label lblLog;
         private RadioButton rbt11;
+        private CheckBox cbx10bit;
+        private ToolTip tip10bit;
     }
 }

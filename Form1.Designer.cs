@@ -54,6 +54,7 @@
             tbxWidth = new TextBox();
             tbxHeight = new TextBox();
             grpBoxPercent = new GroupBox();
+            cbx10bit = new CheckBox();
             rbt11 = new RadioButton();
             rbt14 = new RadioButton();
             rbt13 = new RadioButton();
@@ -61,6 +62,7 @@
             rbt12 = new RadioButton();
             rbt23 = new RadioButton();
             btnMergeM3u8 = new Button();
+            tip10bit = new ToolTip(components);
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -314,6 +316,7 @@
             // 
             // grpBoxPercent
             // 
+            grpBoxPercent.Controls.Add(cbx10bit);
             grpBoxPercent.Controls.Add(rbt11);
             grpBoxPercent.Controls.Add(rbt14);
             grpBoxPercent.Controls.Add(rbt13);
@@ -324,9 +327,21 @@
             grpBoxPercent.Margin = new Padding(2);
             grpBoxPercent.Name = "grpBoxPercent";
             grpBoxPercent.Padding = new Padding(2);
-            grpBoxPercent.Size = new Size(106, 85);
+            grpBoxPercent.Size = new Size(178, 85);
             grpBoxPercent.TabIndex = 25;
             grpBoxPercent.TabStop = false;
+            // 
+            // cbx10bit
+            // 
+            cbx10bit.AutoSize = true;
+            cbx10bit.Cursor = Cursors.Hand;
+            cbx10bit.ForeColor = Color.Red;
+            cbx10bit.Location = new Point(102, 36);
+            cbx10bit.Name = "cbx10bit";
+            cbx10bit.Size = new Size(75, 21);
+            cbx10bit.TabIndex = 31;
+            cbx10bit.Text = "压缩出错";
+            cbx10bit.UseVisualStyleBackColor = true;
             // 
             // rbt11
             // 
@@ -417,6 +432,10 @@
             btnMergeM3u8.UseVisualStyleBackColor = true;
             btnMergeM3u8.Click += btnMergeM3u8_Click;
             // 
+            // tip10bit
+            // 
+            tip10bit.ShowAlways = true;
+            // 
             // WaterMark
             // 
             AllowDrop = true;
@@ -496,5 +515,7 @@
         private RadioButton rbt13;
         private RadioButton rbt11;
         private Button btnMergeM3u8;
+        private CheckBox cbx10bit;
+        private ToolTip tip10bit;
     }
 }

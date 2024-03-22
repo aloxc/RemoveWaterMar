@@ -62,6 +62,8 @@ namespace RemoveWaterMar
         public WaterMark()
         {
             InitializeComponent();
+            tip10bit.SetToolTip(cbx10bit, "当压缩去水印退出，可选中试试");
+
             Application.EnableVisualStyles();
             this.DoubleBuffered = true;
             string rootPath = Directory.GetCurrentDirectory();
@@ -307,6 +309,10 @@ namespace RemoveWaterMar
             if (rbtnGpu.Checked)
             {
                 param = "-i \"" + filePath + "\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" -c:v h264_nvenc -gpu 0 \"" + path + "\\" + tempName + guding + ".mp4\" -y";
+                if (cbx10bit.Checked)
+                {
+                    param = "-i \"" + filePath + "\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" -c:v h264_nvenc -gpu 0 -pix_fmt yuv420p \"" + path + "\\" + tempName + guding + ".mp4\" -y";
+                }
             }
             Log.Debug(param);
             process.StartInfo.Arguments = param;
@@ -621,6 +627,10 @@ namespace RemoveWaterMar
             if (rbtnGpu.Checked)
             {
                 param = "-i \"" + filePath + "\" -vf  scale=" + this.tbxWidth.Text + ":" + this.tbxHeight.Text + " -c:v h264_nvenc -gpu 0 \"" + path + "\\" + tempName + scale + ".mp4\" -y";
+                if (cbx10bit.Checked)
+                {
+                    param = "-i \"" + filePath + "\" -vf  scale=" + this.tbxWidth.Text + ":" + this.tbxHeight.Text + " -c:v h264_nvenc -gpu 0 -pix_fmt yuv420p \"" + path + "\\" + tempName + scale + ".mp4\" -y";
+                }
             }
             Log.Debug(param);
             process.StartInfo.Arguments = param;

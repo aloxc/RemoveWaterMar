@@ -32,6 +32,7 @@ namespace RemoveWaterMar
         public ScaleForm()
         {
             InitializeComponent();
+            tip10bit.SetToolTip(cbx10bit, "当压缩去水印退出，可选中试试");
             Application.EnableVisualStyles();
             this.DoubleBuffered = true;
             string rootPath = Directory.GetCurrentDirectory();
@@ -363,6 +364,10 @@ namespace RemoveWaterMar
                     if (rbtnGpu.Checked)
                     {
                         param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " -c:v h264_nvenc -gpu 0 \"" + outFile + "\" -y";
+                        if (cbx10bit.Checked)
+                        {
+                            param = "-i \"" + filePath + "\" -vf  scale=" + size.width + ":" + size.height + " -c:v h264_nvenc -gpu 0 -pix_fmt yuv420p \"" + outFile + "\" -y";
+                        }
                     }
                     Log.Debug(param);
                     process.StartInfo.Arguments = param;
