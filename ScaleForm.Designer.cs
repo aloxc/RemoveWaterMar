@@ -317,11 +317,11 @@
             cbx10bit.AutoSize = true;
             cbx10bit.Cursor = Cursors.Hand;
             cbx10bit.ForeColor = Color.Red;
-            cbx10bit.Location = new Point(8, 280);
+            cbx10bit.Location = new Point(8, 262);
             cbx10bit.Name = "cbx10bit";
-            cbx10bit.Size = new Size(75, 21);
+            cbx10bit.Size = new Size(88, 55);
             cbx10bit.TabIndex = 40;
-            cbx10bit.Text = "压缩出错";
+            cbx10bit.Text = "压缩出错\n选中试试\n仅测试GPU";
             cbx10bit.UseVisualStyleBackColor = true;
             // 
             // tip10bit

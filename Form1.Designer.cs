@@ -327,7 +327,7 @@
             grpBoxPercent.Margin = new Padding(2);
             grpBoxPercent.Name = "grpBoxPercent";
             grpBoxPercent.Padding = new Padding(2);
-            grpBoxPercent.Size = new Size(178, 85);
+            grpBoxPercent.Size = new Size(194, 85);
             grpBoxPercent.TabIndex = 25;
             grpBoxPercent.TabStop = false;
             // 
@@ -336,11 +336,11 @@
             cbx10bit.AutoSize = true;
             cbx10bit.Cursor = Cursors.Hand;
             cbx10bit.ForeColor = Color.Red;
-            cbx10bit.Location = new Point(102, 36);
+            cbx10bit.Location = new Point(101, 20);
             cbx10bit.Name = "cbx10bit";
-            cbx10bit.Size = new Size(75, 21);
+            cbx10bit.Size = new Size(88, 55);
             cbx10bit.TabIndex = 31;
-            cbx10bit.Text = "压缩出错";
+            cbx10bit.Text = "压缩出错\n选中试试\n仅测试GPU";
             cbx10bit.UseVisualStyleBackColor = true;
             // 
             // rbt11
