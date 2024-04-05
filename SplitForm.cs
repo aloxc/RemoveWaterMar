@@ -503,6 +503,8 @@ namespace RemoveWaterMar
             //执行过程中停止了
             Log.Information("out " + e.Data);
             int count = lbxFile.Items.Count;
+            spendTime = new TimeSpan(DateTime.Now.Ticks);
+
         }
 
 
@@ -533,7 +535,7 @@ namespace RemoveWaterMar
             Log.Information("exit ");
             TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
             TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
-            lbxFile.Items[index].SubItems[3].Text = Convert.ToString((int)abs.TotalSeconds) + "(完成)";
+            lbxFile.Items[index].SubItems[3].Text = "(完成)";
 
             this.btnBatchDoIt.Enabled = true;
             this.btnStopBatch.Enabled = false;
