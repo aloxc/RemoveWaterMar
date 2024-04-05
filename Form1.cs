@@ -493,7 +493,7 @@ namespace RemoveWaterMar
             ffplay.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             string param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" ";
 
-            if (x ==0 && y ==0 && width == 0 && height == 0)
+            if (x == 0 && y == 0 && width == 0 && height == 0)
             {
                 param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\"  ";
 
@@ -771,6 +771,12 @@ namespace RemoveWaterMar
             M3u8 m3 = new M3u8();
             m3.ShowDialog();
 
+        }
+
+        private void btnSplit_Click(object sender, EventArgs e)
+        {
+            SplitForm split = new SplitForm();
+            split.ShowDialog();
         }
     }
 }

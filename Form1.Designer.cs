@@ -63,6 +63,7 @@
             rbt23 = new RadioButton();
             btnMergeM3u8 = new Button();
             tip10bit = new ToolTip(components);
+            btnSplit = new Button();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -424,9 +425,9 @@
             // 
             // btnMergeM3u8
             // 
-            btnMergeM3u8.Location = new Point(492, 14);
+            btnMergeM3u8.Location = new Point(909, 50);
             btnMergeM3u8.Name = "btnMergeM3u8";
-            btnMergeM3u8.Size = new Size(92, 23);
+            btnMergeM3u8.Size = new Size(92, 24);
             btnMergeM3u8.TabIndex = 26;
             btnMergeM3u8.Text = "合并m3u8";
             btnMergeM3u8.UseVisualStyleBackColor = true;
@@ -436,12 +437,24 @@
             // 
             tip10bit.ShowAlways = true;
             // 
+            // btnSplit
+            // 
+            btnSplit.Location = new Point(909, 88);
+            btnSplit.Margin = new Padding(2);
+            btnSplit.Name = "btnSplit";
+            btnSplit.Size = new Size(92, 24);
+            btnSplit.TabIndex = 27;
+            btnSplit.Text = "视频截取";
+            btnSplit.UseVisualStyleBackColor = true;
+            btnSplit.Click += btnSplit_Click;
+            // 
             // WaterMark
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1253, 928);
+            Controls.Add(btnSplit);
             Controls.Add(btnMergeM3u8);
             Controls.Add(grpBoxPercent);
             Controls.Add(tbxHeight);
@@ -517,5 +530,6 @@
         private Button btnMergeM3u8;
         private CheckBox cbx10bit;
         private ToolTip tip10bit;
+        private Button btnSplit;
     }
 }
