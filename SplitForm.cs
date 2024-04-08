@@ -397,7 +397,7 @@ namespace RemoveWaterMar
         }
         private void checkAndRunTask(object v)
         {
-            Log.Debug("runTask,开始");
+            //Log.Debug("runTask,开始");
             int count = lbxFile.Items.Count;
             if (count == 0)
             {
@@ -415,7 +415,7 @@ namespace RemoveWaterMar
             }
             if (hasFfmpeg)
             {
-                Log.Debug("runTask,有ffmpeg");
+                //Log.Debug("runTask,有ffmpeg");
                 return;
             }
             bool doneAll = true;
@@ -511,7 +511,7 @@ namespace RemoveWaterMar
         {
             //这里得到的是错误信息
             string info = e.Data;
-            Log.Information("error " + e.Data);
+            //Log.Information("error " + e.Data);
             if (info != null && info.Contains("frame") && info.Contains("fps") && info.Contains("size") && info.Contains("time") && info.Contains("bitrate") && info.Contains("speed"))
             {
                 lblLog.Text = info;
@@ -531,7 +531,7 @@ namespace RemoveWaterMar
 
         void batch_Exited(Object sender, EventArgs e)
         {
-            Log.Information("exit ");
+            Log.Information("已完成 " + lbxFile.Items[index].SubItems[0].Text);
             TimeSpan end = new TimeSpan(DateTime.Now.Ticks);    //获取当前时间的刻度数
             TimeSpan abs = end.Subtract(spendTime).Duration();      //时间差的绝对值
             lbxFile.Items[index].SubItems[3].Text = "(完成)";
