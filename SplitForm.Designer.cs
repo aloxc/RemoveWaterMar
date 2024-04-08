@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SplitForm));
             tabControl1 = new TabControl();
             tabOne = new TabPage();
@@ -45,6 +46,7 @@
             btnDoOne = new Button();
             btnOpenVideo = new Button();
             tabBatch = new TabPage();
+            btnDeleteSelect = new Button();
             btnMakeList = new Button();
             btnClearAll = new Button();
             btnCleanDone = new Button();
@@ -57,6 +59,7 @@
             btnBatchDoIt = new Button();
             btnBatchOpenConfig = new Button();
             lblLog = new Label();
+            tipsMakeList = new ToolTip(components);
             tabControl1.SuspendLayout();
             tabOne.SuspendLayout();
             tabBatch.SuspendLayout();
@@ -220,6 +223,7 @@
             // 
             // tabBatch
             // 
+            tabBatch.Controls.Add(btnDeleteSelect);
             tabBatch.Controls.Add(btnMakeList);
             tabBatch.Controls.Add(btnClearAll);
             tabBatch.Controls.Add(btnCleanDone);
@@ -239,19 +243,29 @@
             tabBatch.Text = "批处理";
             tabBatch.UseVisualStyleBackColor = true;
             // 
+            // btnDeleteSelect
+            // 
+            btnDeleteSelect.Location = new Point(204, 11);
+            btnDeleteSelect.Name = "btnDeleteSelect";
+            btnDeleteSelect.Size = new Size(75, 23);
+            btnDeleteSelect.TabIndex = 17;
+            btnDeleteSelect.Text = "清理选中";
+            btnDeleteSelect.UseVisualStyleBackColor = true;
+            btnDeleteSelect.Click += btnDeleteSelect_Click;
+            // 
             // btnMakeList
             // 
             btnMakeList.BackColor = Color.Red;
-            btnMakeList.Location = new Point(14, 10);
+            btnMakeList.Location = new Point(6, 10);
             btnMakeList.Name = "btnMakeList";
-            btnMakeList.Size = new Size(12, 23);
+            btnMakeList.Size = new Size(20, 23);
             btnMakeList.TabIndex = 16;
             btnMakeList.UseVisualStyleBackColor = false;
             btnMakeList.Click += btnMakeList_Click;
             // 
             // btnClearAll
             // 
-            btnClearAll.Location = new Point(369, 11);
+            btnClearAll.Location = new Point(366, 11);
             btnClearAll.Name = "btnClearAll";
             btnClearAll.Size = new Size(75, 23);
             btnClearAll.TabIndex = 15;
@@ -261,7 +275,7 @@
             // 
             // btnCleanDone
             // 
-            btnCleanDone.Location = new Point(284, 11);
+            btnCleanDone.Location = new Point(285, 11);
             btnCleanDone.Name = "btnCleanDone";
             btnCleanDone.Size = new Size(75, 23);
             btnCleanDone.TabIndex = 14;
@@ -313,11 +327,11 @@
             // 
             // btnStopBatch
             // 
-            btnStopBatch.Location = new Point(199, 11);
+            btnStopBatch.Location = new Point(158, 11);
             btnStopBatch.Name = "btnStopBatch";
-            btnStopBatch.Size = new Size(75, 23);
+            btnStopBatch.Size = new Size(40, 23);
             btnStopBatch.TabIndex = 3;
-            btnStopBatch.Text = "停止处理";
+            btnStopBatch.Text = "停止";
             btnStopBatch.UseVisualStyleBackColor = true;
             btnStopBatch.Click += btnStopBatch_Click;
             // 
@@ -336,9 +350,9 @@
             // 
             // btnBatchDoIt
             // 
-            btnBatchDoIt.Location = new Point(114, 11);
+            btnBatchDoIt.Location = new Point(110, 11);
             btnBatchDoIt.Name = "btnBatchDoIt";
-            btnBatchDoIt.Size = new Size(75, 23);
+            btnBatchDoIt.Size = new Size(42, 23);
             btnBatchDoIt.TabIndex = 1;
             btnBatchDoIt.Text = "处理";
             btnBatchDoIt.UseVisualStyleBackColor = true;
@@ -362,6 +376,10 @@
             lblLog.Name = "lblLog";
             lblLog.Size = new Size(795, 17);
             lblLog.TabIndex = 8;
+            // 
+            // tipsMakeList
+            // 
+            tipsMakeList.ShowAlways = true;
             // 
             // SplitForm
             // 
@@ -416,5 +434,7 @@
         private Button btnClearAll;
         private Button btnCleanDone;
         private Button btnMakeList;
+        private Button btnDeleteSelect;
+        private ToolTip tipsMakeList;
     }
 }

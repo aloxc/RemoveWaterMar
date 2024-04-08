@@ -39,6 +39,8 @@ namespace RemoveWaterMar
             this.DoubleBuffered = true;
             System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;
             Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("./log.txt", rollingInterval: RollingInterval.Month).CreateLogger();
+            tipsMakeList.SetToolTip(btnMakeList, "生成一个文件列表，打开需要处理的视频文件夹");
+
         }
 
         private void SplitForm_Load(object sender, EventArgs e)
@@ -257,7 +259,7 @@ namespace RemoveWaterMar
                     {
                         content += line;
                         string[] infos = line.Split('\t');
-                        if (infos.Length != 2 && infos.Length != 3)
+                        if (infos.Length <= 2)
                         {
                             MessageBox.Show(infos[0], "配置文件格式错误,每行一个任务，使用制表符分割\n第一列是文件路径\n第二列是开始时间00:00:00\n第三列是结束时间(可选)00:00:00\n\n");
                             splitFiles.Clear();
@@ -297,7 +299,7 @@ namespace RemoveWaterMar
                             return;
                         }
                         SplitFile file = new SplitFile(infos[0], infos[1]);
-                        if (infos.Length == 3)
+                        if (infos.Length >= 3)
                         {
                             startT = infos[2];
 
@@ -369,9 +371,6 @@ namespace RemoveWaterMar
             spendTimeTotal = new TimeSpan(DateTime.Now.Ticks);
 
             taskTimer = new System.Threading.Timer(new TimerCallback(checkAndRunTask));
-
-
-
 
             int count = lbxFile.Items.Count;
             if (count == 0)
@@ -561,7 +560,26 @@ namespace RemoveWaterMar
                 this.lblDoneCount.Text = "已完成 " + doneCount;
             }
         }
-
+        private void btnDeleteSelect_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in lbxFile.SelectedItems)
+            {
+                if (item.SubItems[percentColumIndex].Text.Contains("100"))
+                {
+                    if (doneCount > 0)
+                    {
+                        doneCount--;
+                    }
+                    this.lblDoneCount.Text = "已完成 " + doneCount;
+                    lbxFile.Items.Remove(item);
+                }
+                else
+                {
+                    this.lblTaskCount.Text = "总任务 " + this.lbxFile.Controls.Count;
+                }
+                lbxFile.Items.Remove(item);
+            }
+        }
         private void btnClearAll_Click(object sender, EventArgs e)
         {
             foreach (ListViewItem item in lbxFile.Items)
