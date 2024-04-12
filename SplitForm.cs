@@ -259,7 +259,7 @@ namespace RemoveWaterMar
                     {
                         content += line;
                         string[] infos = line.Split('\t');
-                        if (infos.Length <= 2)
+                        if (infos.Length < 2)
                         {
                             MessageBox.Show(infos[0], "配置文件格式错误,每行一个任务，使用制表符分割\n第一列是文件路径\n第二列是开始时间00:00:00\n第三列是结束时间(可选)00:00:00\n\n");
                             splitFiles.Clear();
