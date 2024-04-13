@@ -451,7 +451,7 @@
             // 
             // btnJianYingDraft
             // 
-            btnJianYingDraft.Location = new Point(1007, 51);
+            btnJianYingDraft.Location = new Point(1020, 50);
             btnJianYingDraft.Name = "btnJianYingDraft";
             btnJianYingDraft.Size = new Size(92, 24);
             btnJianYingDraft.TabIndex = 28;
