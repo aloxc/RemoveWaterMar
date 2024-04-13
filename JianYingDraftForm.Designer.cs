@@ -42,7 +42,7 @@
             btnDoit.Location = new Point(136, 24);
             btnDoit.Name = "btnDoit";
             btnDoit.Size = new Size(75, 23);
-            btnDoit.TabIndex = 0;
+            btnDoit.TabIndex = 999;
             btnDoit.Text = "导出";
             btnDoit.UseVisualStyleBackColor = true;
             btnDoit.Click += btnDoit_Click;
@@ -87,7 +87,7 @@
             lblTaskCount.Name = "lblTaskCount";
             lblTaskCount.Size = new Size(55, 17);
             lblTaskCount.TabIndex = 7;
-            lblTaskCount.Text = "总任务 1";
+            lblTaskCount.Text = "总任务 0";
             // 
             // lblDoneCount
             // 
