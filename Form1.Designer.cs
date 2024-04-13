@@ -64,6 +64,7 @@
             btnMergeM3u8 = new Button();
             tip10bit = new ToolTip(components);
             btnSplit = new Button();
+            btnJianYingDraft = new Button();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
@@ -448,12 +449,23 @@
             btnSplit.UseVisualStyleBackColor = true;
             btnSplit.Click += btnSplit_Click;
             // 
+            // btnJianYingDraft
+            // 
+            btnJianYingDraft.Location = new Point(1007, 51);
+            btnJianYingDraft.Name = "btnJianYingDraft";
+            btnJianYingDraft.Size = new Size(92, 24);
+            btnJianYingDraft.TabIndex = 28;
+            btnJianYingDraft.Text = "剪映草稿音频";
+            btnJianYingDraft.UseVisualStyleBackColor = true;
+            btnJianYingDraft.Click += btnJianYingDraft_Click;
+            // 
             // WaterMark
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1253, 928);
+            Controls.Add(btnJianYingDraft);
             Controls.Add(btnSplit);
             Controls.Add(btnMergeM3u8);
             Controls.Add(grpBoxPercent);
@@ -531,5 +543,6 @@
         private CheckBox cbx10bit;
         private ToolTip tip10bit;
         private Button btnSplit;
+        private Button btnJianYingDraft;
     }
 }

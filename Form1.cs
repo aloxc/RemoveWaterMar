@@ -778,5 +778,11 @@ namespace RemoveWaterMar
             SplitForm split = new SplitForm();
             split.ShowDialog();
         }
+
+        private void btnJianYingDraft_Click(object sender, EventArgs e)
+        {
+            JianYingDraftForm form = new JianYingDraftForm();   
+            form.ShowDialog();
+        }
     }
 }
