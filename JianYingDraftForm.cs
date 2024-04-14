@@ -151,8 +151,14 @@ namespace RemoveWaterMar
                     }
                 }
             }
-            System.Diagnostics.Process.Start("Explorer",mainConfig.JianYingOutPath);
-
+            if(selectedItems.Count == 1)
+            {
+                System.Diagnostics.Process.Start("Explorer", mainConfig.JianYingOutPath + "\\" + selectedItems[0].SubItems[0].Text);
+            }
+            else
+            {
+                System.Diagnostics.Process.Start("Explorer", mainConfig.JianYingOutPath);
+            }
 
         }
 
