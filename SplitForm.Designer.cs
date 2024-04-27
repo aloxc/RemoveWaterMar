@@ -46,6 +46,7 @@
             btnDoOne = new Button();
             btnOpenVideo = new Button();
             tabBatch = new TabPage();
+            cbxShutdown = new CheckBox();
             btnDeleteSelect = new Button();
             btnMakeList = new Button();
             btnClearAll = new Button();
@@ -60,6 +61,7 @@
             btnBatchOpenConfig = new Button();
             lblLog = new Label();
             tipsMakeList = new ToolTip(components);
+            shutdownTimer = new System.Windows.Forms.Timer(components);
             tabControl1.SuspendLayout();
             tabOne.SuspendLayout();
             tabBatch.SuspendLayout();
@@ -223,6 +225,7 @@
             // 
             // tabBatch
             // 
+            tabBatch.Controls.Add(cbxShutdown);
             tabBatch.Controls.Add(btnDeleteSelect);
             tabBatch.Controls.Add(btnMakeList);
             tabBatch.Controls.Add(btnClearAll);
@@ -242,6 +245,17 @@
             tabBatch.TabIndex = 1;
             tabBatch.Text = "批处理";
             tabBatch.UseVisualStyleBackColor = true;
+            // 
+            // cbxShutdown
+            // 
+            cbxShutdown.AutoSize = true;
+            cbxShutdown.Location = new Point(519, 13);
+            cbxShutdown.Name = "cbxShutdown";
+            cbxShutdown.Size = new Size(51, 21);
+            cbxShutdown.TabIndex = 18;
+            cbxShutdown.Text = "关机";
+            cbxShutdown.UseVisualStyleBackColor = true;
+            cbxShutdown.CheckedChanged += cbxShutdown_CheckedChanged;
             // 
             // btnDeleteSelect
             // 
@@ -288,7 +302,7 @@
             cbxBatchGpu.AutoSize = true;
             cbxBatchGpu.Checked = true;
             cbxBatchGpu.CheckState = CheckState.Checked;
-            cbxBatchGpu.Location = new Point(453, 13);
+            cbxBatchGpu.Location = new Point(445, 13);
             cbxBatchGpu.Name = "cbxBatchGpu";
             cbxBatchGpu.Size = new Size(75, 21);
             cbxBatchGpu.TabIndex = 13;
@@ -309,7 +323,7 @@
             // 
             lblDoneCount.AutoSize = true;
             lblDoneCount.ForeColor = Color.Red;
-            lblDoneCount.Location = new Point(613, 13);
+            lblDoneCount.Location = new Point(633, 13);
             lblDoneCount.Name = "lblDoneCount";
             lblDoneCount.Size = new Size(63, 17);
             lblDoneCount.TabIndex = 5;
@@ -319,7 +333,7 @@
             // 
             lblTaskCount.AutoSize = true;
             lblTaskCount.ForeColor = Color.Red;
-            lblTaskCount.Location = new Point(539, 13);
+            lblTaskCount.Location = new Point(572, 13);
             lblTaskCount.Name = "lblTaskCount";
             lblTaskCount.Size = new Size(63, 17);
             lblTaskCount.TabIndex = 4;
@@ -381,6 +395,10 @@
             // 
             tipsMakeList.ShowAlways = true;
             // 
+            // shutdownTimer
+            // 
+            
+            // 
             // SplitForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -436,5 +454,7 @@
         private Button btnMakeList;
         private Button btnDeleteSelect;
         private ToolTip tipsMakeList;
+        private CheckBox cbxShutdown;
+        private System.Windows.Forms.Timer shutdownTimer;
     }
 }
