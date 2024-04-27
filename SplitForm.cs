@@ -32,6 +32,10 @@ namespace RemoveWaterMar
         private int index = 0;
         private string outFile = null;
         private int doneCount = 0;
+        string patternTime = @"^(\d{2}):(\d{2}):(\d{2})$"; // 正则表达式，匹配HH:mm:ss格式
+        string patternNumber = @"^(\d{1,})$"; // 正则表达式，匹配HH:mm:ss格式
+        Engine ffmpeg = new Engine(@"ffmpeg.exe");
+        private Barrier barrier;
         public SplitForm()
         {
             InitializeComponent();
@@ -99,7 +103,7 @@ namespace RemoveWaterMar
         private void openOneVideoHander()
         {
             var inputFile = new InputFile(this.lblFile.Text);
-            Engine ffmpeg = new Engine(@"ffmpeg.exe");
+
 
             // 保存位于视频第 15 秒的帧。
             CancellationToken token = new CancellationToken();
@@ -243,7 +247,7 @@ namespace RemoveWaterMar
             openFileDialog.Filter = filter;
             openFileDialog.RestoreDirectory = true;
             openFileDialog.FilterIndex = 1;
-            string pattern = @"^(\d{2}):(\d{2}):(\d{2})$"; // 正则表达式，匹配HH:mm:ss格式
+
             List<SplitFile> splitFiles = new List<SplitFile>();
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -291,7 +295,7 @@ namespace RemoveWaterMar
                         }
                         string startT = infos[1];
 
-                        bool isMatch = Regex.IsMatch(startT, pattern);
+                        bool isMatch = Regex.IsMatch(startT, patternTime);
                         if (!isMatch)
                         {
                             MessageBox.Show(infos[0] + "\n" + startT + "\n正确格式00:01:23", "开始时间格式不正确");
@@ -301,14 +305,18 @@ namespace RemoveWaterMar
                         SplitFile file = new SplitFile(infos[0], infos[1]);
                         if (infos.Length >= 3)
                         {
-                            startT = infos[2];
+                            string endT = infos[2];
 
-                            isMatch = Regex.IsMatch(startT, pattern);
+                            isMatch = Regex.IsMatch(endT, patternTime);
                             if (!isMatch)
                             {
-                                MessageBox.Show(infos[0] + "\n" + startT + "\n正确格式00:01:23", "结束时间格式不正确");
-                                splitFiles.Clear();
-                                return;
+                                if (!Regex.IsMatch(endT.Trim(), patternNumber))
+                                {
+                                    MessageBox.Show(infos[0] + "\n" + endT + "\n正确格式00:01:23或者数字1234\n如果是数字的话就是丢弃视频最后多少秒", "结束时间格式不正确");
+                                    splitFiles.Clear();
+                                    return;
+                                }
+                   
                             }
                             file.end = infos[2];
                         }
@@ -334,38 +342,87 @@ namespace RemoveWaterMar
             }
             if (splitFiles.Count > 0)
             {
+                barrier = new Barrier(splitFiles.Count, a =>
+                {
+                    Log.Information("回调一次,新添加任务数量" + splitFiles.Count);
+                    for (int i = 0; i < splitFiles.Count; i++)
+                    {
+                        SplitFile sf = splitFiles[i];
+                        List<ListViewItem> listItems = new List<ListViewItem>();
+
+                        ListViewItem item = new ListViewItem(sf.toListItem());
+                        listItems.Add(item);
+                        item.UseItemStyleForSubItems = false;
+                        if (i % 2 == 0)
+                        {
+                            item.SubItems[0].BackColor = Color.YellowGreen;
+                            item.SubItems[1].BackColor = Color.YellowGreen;
+                            item.SubItems[2].BackColor = Color.YellowGreen;
+                            item.SubItems[3].BackColor = Color.YellowGreen;
+                        }
+                        else
+                        {
+                            item.SubItems[0].BackColor = Color.MistyRose;
+                            item.SubItems[1].BackColor = Color.MistyRose;
+                            item.SubItems[2].BackColor = Color.MistyRose;
+                            item.SubItems[3].BackColor = Color.MistyRose;
+                        }
+
+                        this.lbxFile.Items.AddRange(listItems.ToArray());
+
+                    }
+
+                    this.lblTaskCount.Text = "总任务 " + splitFiles.Count;
+                    this.lblDoneCount.Text = "已完成 " + 0;
+                });
                 for (int i = 0; i < splitFiles.Count; i++)
                 {
-                    SplitFile sf = splitFiles[i];
-                    List<ListViewItem> listItems = new List<ListViewItem>();
-
-                    ListViewItem item = new ListViewItem(sf.toListItem());
-                    listItems.Add(item);
-                    item.UseItemStyleForSubItems = false;
-                    if (i % 2 == 0)
+                    int taskNo = i;
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(state =>
                     {
-                        item.SubItems[0].BackColor = Color.YellowGreen;
-                        item.SubItems[1].BackColor = Color.YellowGreen;
-                        item.SubItems[2].BackColor = Color.YellowGreen;
-                        item.SubItems[3].BackColor = Color.YellowGreen;
-                    }
-                    else
-                    {
-                        item.SubItems[0].BackColor = Color.MistyRose;
-                        item.SubItems[1].BackColor = Color.MistyRose;
-                        item.SubItems[2].BackColor = Color.MistyRose;
-                        item.SubItems[3].BackColor = Color.MistyRose;
-                    }
-
-                    this.lbxFile.Items.AddRange(listItems.ToArray());
-
+                        GetVideoInfo(splitFiles[taskNo]);
+                    }));
                 }
-
-                this.lblTaskCount.Text = "总任务 " + splitFiles.Count;
-                this.lblDoneCount.Text = "已完成 " + 0;
+            }
+            if (splitFiles.Count > 0)
+            {
+                Log.Information("新添加任务数量" + splitFiles.Count);
             }
         }
-
+        public async void GetVideoInfo(SplitFile inputFile)
+        {
+            Log.Information("开始解析" + inputFile.Name);
+            try
+            {
+                if(inputFile.end == null || inputFile.end.Trim().Length == 0)
+                {
+                    barrier.SignalAndWait();
+                    return;
+                }
+                if (!Regex.IsMatch(inputFile.end, patternNumber))
+                {
+                    barrier.SignalAndWait();
+                    return;
+                }
+                MetaData data = await ffmpeg.GetMetaDataAsync(inputFile, token);
+                if (data == null)
+                {
+                    Log.Information("视频有问题" + inputFile.Name);
+                    barrier.SignalAndWait();
+                    return;
+                }
+                int seconds = (int)data.Duration.TotalSeconds;
+                int endSeconds = seconds - int.Parse(inputFile.end);
+                TimeSpan time = TimeSpan.FromSeconds(endSeconds);
+                inputFile.end = time.ToString(@"hh\:mm\:ss");
+                Log.Information("总时长:{a} 输入:{b} 输出:\t {a}", seconds,endSeconds,inputFile.end);
+                barrier.SignalAndWait();
+            }catch(Exception exxx)
+            {
+                Log.Information("解析" + inputFile.ToString() + "异常");
+                barrier.SignalAndWait();
+            }
+        }
         private void btnBatchDoIt_Click(object sender, EventArgs e)
         {
             spendTimeTotal = new TimeSpan(DateTime.Now.Ticks);
@@ -626,26 +683,29 @@ namespace RemoveWaterMar
             }
         }
     }
-    class SplitFile
+    
+    public class SplitFile : InputFile
     {
-        public string path { get; set; }
         public string start { get; set; }
         public string end { get; set; }
-        public SplitFile(string path, string start, string end)
+        public SplitFile(string file, string start, string end):base(file)
         {
-            this.path = path;
             this.start = start;
             this.end = end;
         }
-        public SplitFile(string path, string start)
+        public SplitFile(string file, string start) : base(file)
         {
-            this.path = path;
             this.start = start;
         }
         public string[] toListItem()
         {
-            string[] arr = new string[] { path, start,end == null ? "" : end,null };
+            string[] arr = new string[] { base.Name, start, end == null ? "" : end, null };
             return arr;
         }
+        public string ToString()
+        {
+            return "文件：" + base.Name + "  开始时间：" + start + "  结束时间：" + (end == null ? "" : end);
+        }
+        
     }
 }

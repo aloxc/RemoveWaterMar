@@ -129,7 +129,7 @@
             // 
             // btnStopOne
             // 
-            btnStopOne.Location = new Point(137, 234);
+            btnStopOne.Location = new Point(137, 261);
             btnStopOne.Name = "btnStopOne";
             btnStopOne.Size = new Size(75, 23);
             btnStopOne.TabIndex = 9;
@@ -141,7 +141,7 @@
             // 
             lblTimeTotalOne.AutoSize = true;
             lblTimeTotalOne.ForeColor = Color.Red;
-            lblTimeTotalOne.Location = new Point(242, 240);
+            lblTimeTotalOne.Location = new Point(242, 267);
             lblTimeTotalOne.Name = "lblTimeTotalOne";
             lblTimeTotalOne.Size = new Size(67, 17);
             lblTimeTotalOne.TabIndex = 8;
@@ -149,7 +149,7 @@
             // 
             // tbxEnd
             // 
-            tbxEnd.Location = new Point(72, 186);
+            tbxEnd.Location = new Point(72, 212);
             tbxEnd.Name = "tbxEnd";
             tbxEnd.Size = new Size(159, 23);
             tbxEnd.TabIndex = 7;
@@ -157,9 +157,9 @@
             // 
             // tbxStart
             // 
-            tbxStart.Location = new Point(69, 127);
+            tbxStart.Location = new Point(72, 163);
             tbxStart.Name = "tbxStart";
-            tbxStart.Size = new Size(162, 23);
+            tbxStart.Size = new Size(159, 23);
             tbxStart.TabIndex = 6;
             tbxStart.Text = "00:03:23";
             // 
@@ -167,7 +167,7 @@
             // 
             label4.AutoSize = true;
             label4.ForeColor = SystemColors.ButtonShadow;
-            label4.Location = new Point(237, 189);
+            label4.Location = new Point(237, 215);
             label4.Name = "label4";
             label4.Size = new Size(132, 17);
             label4.TabIndex = 5;
@@ -177,7 +177,7 @@
             // 
             label3.AutoSize = true;
             label3.ForeColor = SystemColors.ButtonShadow;
-            label3.Location = new Point(237, 130);
+            label3.Location = new Point(237, 166);
             label3.Name = "label3";
             label3.Size = new Size(88, 17);
             label3.TabIndex = 4;
@@ -186,7 +186,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(14, 189);
+            label2.Location = new Point(14, 215);
             label2.Name = "label2";
             label2.Size = new Size(56, 17);
             label2.TabIndex = 3;
@@ -195,7 +195,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(14, 130);
+            label1.Location = new Point(14, 166);
             label1.Name = "label1";
             label1.Size = new Size(56, 17);
             label1.TabIndex = 2;
@@ -203,7 +203,7 @@
             // 
             // btnDoOne
             // 
-            btnDoOne.Location = new Point(14, 234);
+            btnDoOne.Location = new Point(14, 261);
             btnDoOne.Name = "btnDoOne";
             btnDoOne.Size = new Size(75, 23);
             btnDoOne.TabIndex = 1;
