@@ -455,8 +455,8 @@ namespace RemoveWaterMar
             {
                 return;
             }
-            Player player = new Player(filePath);
-            player.ShowDialog();
+            //Player player = new Player(filePath);
+            //player.ShowDialog();
         }
 
         private void btnOpenNewVideo_Click(object sender, EventArgs e)
@@ -470,8 +470,8 @@ namespace RemoveWaterMar
             {
                 return;
             }
-            Player player = new Player(outPath);
-            player.ShowDialog();
+            //Player player = new Player(outPath);
+            //player.ShowDialog();
         }
 
         private void method_Click(object sender, EventArgs e)
@@ -479,11 +479,6 @@ namespace RemoveWaterMar
             RadioButton radioButton = sender as RadioButton;
         }
 
-        private void btnHelp_Click(object sender, EventArgs e)
-        {
-            Help help = new Help();
-            help.ShowDialog();
-        }
 
         private void btnPrevVideo_Click(object sender, EventArgs e)
         {
@@ -491,11 +486,21 @@ namespace RemoveWaterMar
             ffplay.StartInfo.FileName = "ffplay";
             ffplay.StartInfo.WorkingDirectory = "./";
             ffplay.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-            string param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" ";
+            Rectangle ScreenArea = System.Windows.Forms.Screen.GetBounds(this); 
+            int width1 = picWidth;
+            int height1 = picHeight;
+            if (ScreenArea.Width <= picWidth)
+            {
+                width1 = picWidth * 3 / 4;
+                height1 = picHeight * 3 / 4;
+            }
+            string param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\" -vf  \"delogo=x=" + x + ":y=" + y + ":w=" + width + ":h=" + height + ":show=0\" -x " + width1 + " -y " + height1; ;
 
             if (x == 0 && y == 0 && width == 0 && height == 0)
             {
-                param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\"  ";
+                param = "-i \"" + filePath + "\" -window_title \"预览处理效果视频\"  -vf \"drawtext=text='时间%{pts\\:hms}':fontfile=C\\\\:/Windows/fonts/msyh.ttc:fontcolor=red:fontsize=28:x=20:y=20\" -x " + width1 + " -y " + height1;;
+                //param = "-i \"" + filePath + "\"  -x 960 -y 540 -stats ";
+                //ffplay - i 甄嬛传.E01.mp4 - x 960 - y 540 - vf "drawtext=text='时间%{pts\:hms}':fontfile=C\\:/Windows/fonts/msyh.ttc:fontcolor=red:fontsize=28:x=20:y=20"
 
             }
             ffplay.StartInfo.Arguments = param;
@@ -522,8 +527,6 @@ namespace RemoveWaterMar
         {
             //removeWaterTimer.Enabled = true;
             //notifyIcon1.ShowBalloonTip(0, "消息标题-Error", "这是一个错误类型的消息内容", ToolTipIcon.Info);
-            TestForm me = new TestForm();
-            me.ShowDialog();
         }
 
         private void WaterMark_Load(object sender, EventArgs e)
@@ -781,8 +784,18 @@ namespace RemoveWaterMar
 
         private void btnJianYingDraft_Click(object sender, EventArgs e)
         {
-            JianYingDraftForm form = new JianYingDraftForm();   
+            JianYingDraftForm form = new JianYingDraftForm();
             form.ShowDialog();
+        }
+
+        private void grpBoxPercent_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(this.gboxScale.BackColor);
+        }
+
+        private void gboxScale_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(this.gboxScale.BackColor);
         }
     }
 }

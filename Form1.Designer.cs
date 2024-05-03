@@ -39,12 +39,8 @@
             btnStop = new Button();
             btnPrevPic = new Button();
             picBoxPrev = new PictureBox();
-            btnOpenOld = new Button();
-            btnOpenNew = new Button();
-            btnHelp = new Button();
             btnPrevVideo = new Button();
             removeWaterTimer = new System.Windows.Forms.Timer(components);
-            btnTest = new Button();
             notifyIcon1 = new NotifyIcon(components);
             contextMenuStrip1 = new ContextMenuStrip(components);
             btnResetThumbnail = new Button();
@@ -65,10 +61,12 @@
             tip10bit = new ToolTip(components);
             btnSplit = new Button();
             btnJianYingDraft = new Button();
+            gboxScale = new GroupBox();
             ((System.ComponentModel.ISupportInitialize)picBox).BeginInit();
             gBoxMethod.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).BeginInit();
             grpBoxPercent.SuspendLayout();
+            gboxScale.SuspendLayout();
             SuspendLayout();
             // 
             // btnOpen
@@ -180,40 +178,6 @@
             picBoxPrev.TabIndex = 13;
             picBoxPrev.TabStop = false;
             // 
-            // btnOpenOld
-            // 
-            btnOpenOld.Location = new Point(8, 88);
-            btnOpenOld.Margin = new Padding(2);
-            btnOpenOld.Name = "btnOpenOld";
-            btnOpenOld.RightToLeft = RightToLeft.No;
-            btnOpenOld.Size = new Size(92, 24);
-            btnOpenOld.TabIndex = 14;
-            btnOpenOld.Text = "打开旧视频";
-            btnOpenOld.UseVisualStyleBackColor = true;
-            btnOpenOld.Click += btnOpenOldVideo_Click;
-            // 
-            // btnOpenNew
-            // 
-            btnOpenNew.Location = new Point(129, 88);
-            btnOpenNew.Margin = new Padding(2);
-            btnOpenNew.Name = "btnOpenNew";
-            btnOpenNew.Size = new Size(92, 24);
-            btnOpenNew.TabIndex = 15;
-            btnOpenNew.Text = "打开新视频";
-            btnOpenNew.UseVisualStyleBackColor = true;
-            btnOpenNew.Click += btnOpenNewVideo_Click;
-            // 
-            // btnHelp
-            // 
-            btnHelp.Location = new Point(492, 50);
-            btnHelp.Margin = new Padding(2);
-            btnHelp.Name = "btnHelp";
-            btnHelp.Size = new Size(92, 24);
-            btnHelp.TabIndex = 16;
-            btnHelp.Text = "帮助";
-            btnHelp.UseVisualStyleBackColor = true;
-            btnHelp.Click += btnHelp_Click;
-            // 
             // btnPrevVideo
             // 
             btnPrevVideo.Location = new Point(370, 50);
@@ -229,17 +193,6 @@
             // 
             removeWaterTimer.Interval = 300;
             removeWaterTimer.Tick += removeWaterTimerCall;
-            // 
-            // btnTest
-            // 
-            btnTest.Location = new Point(370, 88);
-            btnTest.Margin = new Padding(2);
-            btnTest.Name = "btnTest";
-            btnTest.Size = new Size(92, 24);
-            btnTest.TabIndex = 18;
-            btnTest.Text = "测试";
-            btnTest.UseVisualStyleBackColor = true;
-            btnTest.Click += test_Click;
             // 
             // notifyIcon1
             // 
@@ -271,7 +224,7 @@
             // 
             // btnSetScale
             // 
-            btnSetScale.Location = new Point(492, 88);
+            btnSetScale.Location = new Point(20, 21);
             btnSetScale.Margin = new Padding(2);
             btnSetScale.Name = "btnSetScale";
             btnSetScale.Size = new Size(92, 24);
@@ -283,7 +236,7 @@
             // lblWidth
             // 
             lblWidth.AutoSize = true;
-            lblWidth.Location = new Point(602, 53);
+            lblWidth.Location = new Point(131, 24);
             lblWidth.Margin = new Padding(2, 0, 2, 0);
             lblWidth.Name = "lblWidth";
             lblWidth.Size = new Size(32, 17);
@@ -293,7 +246,7 @@
             // lblHeight
             // 
             lblHeight.AutoSize = true;
-            lblHeight.Location = new Point(602, 91);
+            lblHeight.Location = new Point(131, 62);
             lblHeight.Margin = new Padding(2, 0, 2, 0);
             lblHeight.Name = "lblHeight";
             lblHeight.Size = new Size(32, 17);
@@ -302,7 +255,7 @@
             // 
             // tbxWidth
             // 
-            tbxWidth.Location = new Point(628, 52);
+            tbxWidth.Location = new Point(164, 23);
             tbxWidth.Margin = new Padding(2);
             tbxWidth.Name = "tbxWidth";
             tbxWidth.Size = new Size(61, 23);
@@ -310,7 +263,7 @@
             // 
             // tbxHeight
             // 
-            tbxHeight.Location = new Point(628, 89);
+            tbxHeight.Location = new Point(164, 60);
             tbxHeight.Margin = new Padding(2);
             tbxHeight.Name = "tbxHeight";
             tbxHeight.Size = new Size(61, 23);
@@ -325,13 +278,14 @@
             grpBoxPercent.Controls.Add(rbt34);
             grpBoxPercent.Controls.Add(rbt12);
             grpBoxPercent.Controls.Add(rbt23);
-            grpBoxPercent.Location = new Point(697, 36);
+            grpBoxPercent.Location = new Point(252, 7);
             grpBoxPercent.Margin = new Padding(2);
             grpBoxPercent.Name = "grpBoxPercent";
             grpBoxPercent.Padding = new Padding(2);
             grpBoxPercent.Size = new Size(194, 85);
             grpBoxPercent.TabIndex = 25;
             grpBoxPercent.TabStop = false;
+            grpBoxPercent.Paint += grpBoxPercent_Paint;
             // 
             // cbx10bit
             // 
@@ -426,7 +380,7 @@
             // 
             // btnMergeM3u8
             // 
-            btnMergeM3u8.Location = new Point(909, 50);
+            btnMergeM3u8.Location = new Point(370, 87);
             btnMergeM3u8.Name = "btnMergeM3u8";
             btnMergeM3u8.Size = new Size(92, 24);
             btnMergeM3u8.TabIndex = 26;
@@ -440,7 +394,7 @@
             // 
             // btnSplit
             // 
-            btnSplit.Location = new Point(909, 88);
+            btnSplit.Location = new Point(129, 87);
             btnSplit.Margin = new Padding(2);
             btnSplit.Name = "btnSplit";
             btnSplit.Size = new Size(92, 24);
@@ -451,7 +405,7 @@
             // 
             // btnJianYingDraft
             // 
-            btnJianYingDraft.Location = new Point(1020, 50);
+            btnJianYingDraft.Location = new Point(8, 87);
             btnJianYingDraft.Name = "btnJianYingDraft";
             btnJianYingDraft.Size = new Size(92, 24);
             btnJianYingDraft.TabIndex = 28;
@@ -459,27 +413,34 @@
             btnJianYingDraft.UseVisualStyleBackColor = true;
             btnJianYingDraft.Click += btnJianYingDraft_Click;
             // 
+            // gboxScale
+            // 
+            gboxScale.BackColor = Color.Khaki;
+            gboxScale.Controls.Add(btnSetScale);
+            gboxScale.Controls.Add(lblWidth);
+            gboxScale.Controls.Add(lblHeight);
+            gboxScale.Controls.Add(tbxWidth);
+            gboxScale.Controls.Add(tbxHeight);
+            gboxScale.Controls.Add(grpBoxPercent);
+            gboxScale.Location = new Point(467, 28);
+            gboxScale.Name = "gboxScale";
+            gboxScale.Size = new Size(464, 101);
+            gboxScale.TabIndex = 29;
+            gboxScale.TabStop = false;
+            gboxScale.Paint += gboxScale_Paint;
+            // 
             // WaterMark
             // 
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1253, 928);
+            Controls.Add(gboxScale);
             Controls.Add(btnJianYingDraft);
             Controls.Add(btnSplit);
             Controls.Add(btnMergeM3u8);
-            Controls.Add(grpBoxPercent);
-            Controls.Add(tbxHeight);
-            Controls.Add(tbxWidth);
-            Controls.Add(lblHeight);
-            Controls.Add(lblWidth);
-            Controls.Add(btnSetScale);
             Controls.Add(btnResetThumbnail);
-            Controls.Add(btnTest);
             Controls.Add(btnPrevVideo);
-            Controls.Add(btnHelp);
-            Controls.Add(btnOpenNew);
-            Controls.Add(btnOpenOld);
             Controls.Add(picBoxPrev);
             Controls.Add(btnPrevPic);
             Controls.Add(btnStop);
@@ -503,6 +464,8 @@
             ((System.ComponentModel.ISupportInitialize)picBoxPrev).EndInit();
             grpBoxPercent.ResumeLayout(false);
             grpBoxPercent.PerformLayout();
+            gboxScale.ResumeLayout(false);
+            gboxScale.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -518,12 +481,8 @@
         private Button btnStop;
         private Button btnPrevPic;
         private PictureBox picBoxPrev;
-        private Button btnOpenOld;
-        private Button btnOpenNew;
-        private Button btnHelp;
         private Button btnPrevVideo;
         private System.Windows.Forms.Timer removeWaterTimer;
-        private Button btnTest;
         private NotifyIcon notifyIcon1;
         private ContextMenuStrip contextMenuStrip1;
         private Button btnResetThumbnail;
@@ -544,5 +503,6 @@
         private ToolTip tip10bit;
         private Button btnSplit;
         private Button btnJianYingDraft;
+        private GroupBox gboxScale;
     }
 }

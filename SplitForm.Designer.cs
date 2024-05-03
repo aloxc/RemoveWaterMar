@@ -397,7 +397,7 @@
             // 
             // shutdownTimer
             // 
-            
+            shutdownTimer.Interval = 5000;
             // 
             // SplitForm
             // 

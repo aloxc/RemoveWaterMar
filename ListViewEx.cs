@@ -70,6 +70,7 @@ namespace RemoveWaterMar
         {
             this.OwnerDraw = true;
             this.View = View.Details;
+            this.FullRowSelect = true;
         }
         protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
         {
